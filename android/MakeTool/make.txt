@@ -1,0 +1,14 @@
+开始写入 F:/cocos/cocos310/FriendsGame/proj.android/jni/../../Classes的LOCAL_SRC_FILES和LOCAL_C_INCLUDES
+下面部分为LOCAL_SRC_FILES,请自行复制
+              ../../Classes/sdk/android/XAnalysis.cpp \
+              ../../Classes/sdk/XSDKCenter.cpp \
+              ../../Classes/sdk/android/XShare.cpp \
+              ../../Classes/sdk/android/XPurchase.cpp \
+              ../../Classes/HelloWorldScene.cpp \
+              ../../Classes/sdk/android/XAccount.cpp \
+              ../../Classes/sdk/android/XSdkJniHelper.cpp \
+              ../../Classes/sdk/android/XGameAnalysis.cpp \
+              ../../Classes/AppDelegate.cpp \
+下面部分为LOCAL_C_INCLUDES，请自行复制
+              ../../Classes/sdk \
+              ../../Classes/sdk/android \
