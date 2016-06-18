@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/libs/facebook-android-sdk-master/facebook/facebook.iml" filepath="$PROJECT_DIR$/libs/facebook-android-sdk-master/facebook/facebook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../FriendsGame/cocos2d/cocos/platform/android/libcocos2dx/libcocos2dx.iml" filepath="$PROJECT_DIR$/../../FriendsGame/cocos2d/cocos/platform/android/libcocos2dx/libcocos2dx.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../libcore/libcore.iml" filepath="$PROJECT_DIR$/../../libcore/libcore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libfacebook.iml" filepath="$PROJECT_DIR$/libfacebook.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,7 @@
+include ':libcocos2dx'
+project(':libcocos2dx').projectDir = new File(settingsDir, '../../FriendsGame/cocos2d/cocos/platform/android/libcocos2dx')
+include ':libcore'
+project(':libcore').projectDir = new File(settingsDir, '../../libcore')
+include ':facebook'
+project(':facebook').projectDir = new File(settingsDir, './libs/facebook-android-sdk-master/facebook')
+

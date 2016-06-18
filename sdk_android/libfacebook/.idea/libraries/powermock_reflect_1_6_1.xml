@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="powermock-reflect-1.6.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-reflect/1.6.1/97d25eda8275c11161bcddda6ef8beabd534c878/powermock-reflect-1.6.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.powermock/powermock-reflect/1.6.1/e8383abd56f0367a494ace9f9bed112f2dfeb592/powermock-reflect-1.6.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
