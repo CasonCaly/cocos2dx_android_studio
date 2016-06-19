@@ -12,7 +12,7 @@ import com.facebook.*;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.json.JSONObject;
 import org.json.JSONArray;
-
+import  android.os.Bundle;
 import java.util.Arrays;
 
 /**
@@ -42,7 +42,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-
+                Log.d("FacebookAccount", "onCurrentProfileChanged");
             }
         };
     }
@@ -53,7 +53,6 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
      */
     public void onSuccess(LoginResult loginResult)
     {
-        //AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Profile profile = Profile.getCurrentProfile();
         if(null != profile)
         {
@@ -88,8 +87,54 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     @Override
     public void login()
     {
-        LoginManager loginManager = LoginManager.getInstance();
-        loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        Profile profile = Profile.getCurrentProfile();
+        if(null == accessToken)
+        {
+            LoginManager loginManager = LoginManager.getInstance();
+            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+        }
+        else
+        {
+
+            String imageUrl = profile.getProfilePictureUri(120, 120).toString();
+
+            Log.d("FacebookAccount", imageUrl);
+
+            GraphRequest.GraphJSONObjectCallback callback = new GraphRequest.GraphJSONObjectCallback()
+            {
+                @Override
+                public void onCompleted(JSONObject object, GraphResponse response)
+                {
+                    FacebookRequestError error = response.getError();
+                    if(null == error)
+                    {
+                        Log.d("FacebookAccount", object.toString());
+                        FacebookAccount.this.notifLoginFinished(null);
+                    }
+                    else
+                    {
+                        FacebookRequestError.Category category = error.getCategory();
+                        if(FacebookRequestError.Category.LOGIN_RECOVERABLE == category)
+                        {   //认证失败了需要重新采用登陆框登陆
+                            LoginManager loginManager = LoginManager.getInstance();
+                            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+                        }
+                        else
+                        {
+                            FacebookAccount.this.notifLoginFinished(error.getErrorMessage());
+                        }
+                    }
+                }
+            };
+
+
+            GraphRequest request = GraphRequest.newMeRequest(accessToken, callback);
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,gender,first_name,last_name,link");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
     }
 
     @Override
@@ -102,14 +147,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     }
 
     @Override
-    public void onDestroy()
-    {
-        if(null != mAccessTokenTracker)
-            mAccessTokenTracker.stopTracking();
-
-        if(null != mProfileTracker)
-            mProfileTracker.stopTracking();
-    }
+    public void onDestroy() {}
 
     protected CallbackManager mCallbackManager;
 
