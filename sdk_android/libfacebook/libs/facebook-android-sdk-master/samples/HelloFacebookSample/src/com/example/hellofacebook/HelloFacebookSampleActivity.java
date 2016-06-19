@@ -228,8 +228,8 @@ public class HelloFacebookSampleActivity extends FragmentActivity {
     }
 
     private void updateUI() {
+        //AccessToken token = AccessToken.getCurrentAccessToken();
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
-
         postStatusUpdateButton.setEnabled(enableButtons || canPresentShareDialog);
         postPhotoButton.setEnabled(enableButtons || canPresentShareDialogWithPhotos);
 

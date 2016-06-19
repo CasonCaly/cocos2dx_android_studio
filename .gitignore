@@ -45,3 +45,20 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+# 
+FriendsGame/FriendsGame.udf
+FriendsGame/cocosstudio
+FriendsGame/proj.win10
+FriendsGame/FriendsGame.ccs
+FriendsGame/Resources
+FriendsGame/config.json
+FriendsGame/proj.ios_mac
+FriendsGame/proj.win32
+FriendsGame/FriendsGame.cfg
+FriendsGame/cocos2d
+FriendsGame/proj.android
+FriendsGame/proj.linux
+FriendsGame/proj.win8.1-universal
+FriendsGame/proj.android-studio/app/obj
+FriendsGame/proj.android-studio/app/assets
+FriendsGame/proj.android-studio/app/libs/armeabi

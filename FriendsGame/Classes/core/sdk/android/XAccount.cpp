@@ -1,6 +1,6 @@
 #include "../XSDKCenter.h"
 #include "XSdkJniHelper.h"
-#include "../thread/RunLoop.h"
+#include "../../thread/XRunLoop.h"
 
 std::string s_accountTemp;
 #define AccountSDKClass     "com/lib/x/AccountSDK"
@@ -70,7 +70,7 @@ const char* Account::getLastName()
 {
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
-	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "setLastName");
+	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getLastName");
 	return s_accountTemp.c_str();
 }
 
@@ -301,13 +301,13 @@ public:
 	    if(m_operate == "didLoginFinished")
 	    {
 	    	const char* szError = m_errorCode.c_str();
-	    	if(szError[0] != 0)
+	    	if(szError[0] == 0)
 	    		szError = nullptr;
  			_delegate->didLoginFinished(szError);
 	    }
 	    else if(m_operate == "didLogoutFinished")
 	    {
-	    	_delegate->didLogoutFinished((AccountLogoutFrom)from);
+	    	_delegate->didLogoutFinished((AccountLogoutFrom)m_from);
 	    }
 	    else if(m_operate == "didLoginCancel")
 	    {

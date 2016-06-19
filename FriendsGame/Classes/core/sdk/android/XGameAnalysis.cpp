@@ -1,7 +1,5 @@
 #include "XGameAnalysis.h"
 
-
-
 GameAnalysis::GameAnalysis()
 {
 }

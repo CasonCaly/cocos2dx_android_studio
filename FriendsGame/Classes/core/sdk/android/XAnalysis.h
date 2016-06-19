@@ -1,5 +1,5 @@
-#ifndef SCX_ANALYSIS_H
-#define SCX_ANALYSIS_H
+#ifndef X_ANALYSIS_H
+#define X_ANALYSIS_H
 #include <string>
 #include <map>
 #include <vector>

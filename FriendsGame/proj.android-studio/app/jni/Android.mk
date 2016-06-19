@@ -11,20 +11,22 @@ LOCAL_MODULE := cocos2dcpp_shared
 LOCAL_MODULE_FILENAME := libcocos2dcpp
 
 LOCAL_SRC_FILES := hellocpp/main.cpp \
-              ../../../Classes/sdk/android/XAnalysis.cpp \
-              ../../../Classes/sdk/XSDKCenter.cpp \
-              ../../../Classes/sdk/android/XShare.cpp \
-              ../../../Classes/sdk/android/XPurchase.cpp \
               ../../../Classes/HelloWorldScene.cpp \
-              ../../../Classes/sdk/android/XAccount.cpp \
-              ../../../Classes/sdk/android/XSdkJniHelper.cpp \
-              ../../../Classes/sdk/android/XGameAnalysis.cpp \
+              ../../../Classes/core/sdk/android/XAccount.cpp \
+              ../../../Classes/core/sdk/android/XSdkJniHelper.cpp \
+              ../../../Classes/core/sdk/android/XGameAnalysis.cpp \
+              ../../../Classes/core/sdk/android/XAnalysis.cpp \
+              ../../../Classes/core/sdk/android/XPurchase.cpp \
+              ../../../Classes/core/sdk/android/XShare.cpp \
+              ../../../Classes/core/sdk/XSDKCenter.cpp \
+              ../../../Classes/core/thread/XRunLoop.cpp \
               ../../../Classes/AppDelegate.cpp \
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes \
-			  $(LOCAL_PATH)/../../../cocos2d/cocos/platform/android/jni \
-              $(LOCAL_PATH)/../../../Classes/sdk \
-              $(LOCAL_PATH)/../../../Classes/sdk/android \
+		$(LOCAL_PATH)/../../../cocos2d/cocos/platform/android/jni \
+              $(LOCAL_PATH)/../../../Classes/core/sdk \
+              $(LOCAL_PATH)/../../../Classes/core/thread \
+              $(LOCAL_PATH)/../../../Classes/core/sdk/android \
 
 # _COCOS_HEADER_ANDROID_BEGIN
 # _COCOS_HEADER_ANDROID_END

@@ -2,6 +2,7 @@ package com.lib.sdk.facebook;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -9,6 +10,8 @@ import com.lib.x.AccountSDK;
 import com.facebook.*;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.util.Arrays;
 
@@ -22,6 +25,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     {
         if(FacebookSdk.isInitialized())
             return;
+
 
         FacebookSdk.sdkInitialize(Cocos2dxActivity.getContext());
         mCallbackManager = CallbackManager.Factory.create();
@@ -61,7 +65,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         }
         else
         {
-            this.notifLoginFinished("LoginResult null");
+            this.notifLoginFinished("Profile null");
         }
     }
 
@@ -84,7 +88,8 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     @Override
     public void login()
     {
-        LoginManager.getInstance().logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+        LoginManager loginManager = LoginManager.getInstance();
+        loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
     }
 
     @Override
