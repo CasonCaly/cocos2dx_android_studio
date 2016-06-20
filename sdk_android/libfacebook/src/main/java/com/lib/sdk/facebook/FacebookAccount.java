@@ -21,11 +21,10 @@ import java.util.Arrays;
 public class FacebookAccount extends AccountSDK implements FacebookCallback<LoginResult>{
 
     @Override
-    public void prepare()
+    public void onCreate(final Bundle instance)
     {
         if(FacebookSdk.isInitialized())
             return;
-
 
         FacebookSdk.sdkInitialize(Cocos2dxActivity.getContext());
         mCallbackManager = CallbackManager.Factory.create();
@@ -35,16 +34,24 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-
+                FacebookAccount.this.mAccessToken = currentAccessToken;
+                Log.d("FacebookAccount", "onCurrentAccessTokenChanged");
             }
         };
 
         mProfileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                FacebookAccount.this.mProfile = currentProfile;
                 Log.d("FacebookAccount", "onCurrentProfileChanged");
             }
         };
+    }
+
+    @Override
+    public void prepare()
+    {
+
     }
 
     @Override
@@ -87,20 +94,13 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     @Override
     public void login()
     {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        Profile profile = Profile.getCurrentProfile();
-        if(null == accessToken)
+        if(null == mAccessToken)
         {
             LoginManager loginManager = LoginManager.getInstance();
             loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
         }
         else
         {
-
-            String imageUrl = profile.getProfilePictureUri(120, 120).toString();
-
-            Log.d("FacebookAccount", imageUrl);
-
             GraphRequest.GraphJSONObjectCallback callback = new GraphRequest.GraphJSONObjectCallback()
             {
                 @Override
@@ -129,7 +129,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
             };
 
 
-            GraphRequest request = GraphRequest.newMeRequest(accessToken, callback);
+            GraphRequest request = GraphRequest.newMeRequest(mAccessToken, callback);
             Bundle parameters = new Bundle();
             parameters.putString("fields", "id,name,gender,first_name,last_name,link");
             request.setParameters(parameters);
@@ -147,11 +147,21 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     }
 
     @Override
-    public void onDestroy() {}
+    public void onDestroy() {
+        if(null != mAccessTokenTracker)
+            mAccessTokenTracker.stopTracking();
+
+        if(null != mProfileTracker)
+            mProfileTracker.stopTracking();
+    }
 
     protected CallbackManager mCallbackManager;
 
     protected AccessTokenTracker mAccessTokenTracker;
 
     protected ProfileTracker mProfileTracker;
+
+    protected AccessToken mAccessToken;
+
+    protected Profile mProfile;
 }

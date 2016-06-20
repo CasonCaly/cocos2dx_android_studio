@@ -65,3 +65,9 @@ FriendsGame/proj.android-studio/app/libs/armeabi
 FriendsGame/.cocos-project.json
 FriendsGame/CMakeLists.txt
 sdk_android/facebook-android-sdk-master.zip
+FriendsGame/proj.android-studio/.idea/gradle.xml
+*.xml
+FriendsGame/proj.android-studio/.idea/gradle.xml
+FriendsGame/proj.android-studio/.idea/misc.xml
+sdk_android/libfacebook/libfacebook.iml
+FriendsGame/proj.android-studio/app/FriendsGame.iml
