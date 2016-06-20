@@ -62,3 +62,6 @@ FriendsGame/proj.win8.1-universal
 FriendsGame/proj.android-studio/app/obj
 FriendsGame/proj.android-studio/app/assets
 FriendsGame/proj.android-studio/app/libs/armeabi
+FriendsGame/.cocos-project.json
+FriendsGame/CMakeLists.txt
+sdk_android/facebook-android-sdk-master.zip
