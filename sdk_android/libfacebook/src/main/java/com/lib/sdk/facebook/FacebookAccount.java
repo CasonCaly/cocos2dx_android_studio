@@ -10,6 +10,7 @@ import com.lib.x.AccountSDK;
 import com.facebook.*;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import  android.os.Bundle;
@@ -19,6 +20,11 @@ import java.util.Arrays;
  * Created by Nervecell on 2016/6/15.
  */
 public class FacebookAccount extends AccountSDK implements FacebookCallback<LoginResult>{
+
+    public FacebookAccount()
+    {
+        m_profileImageSize = 120;
+    }
 
     @Override
     public void onCreate(final Bundle instance)
@@ -46,6 +52,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                 Log.d("FacebookAccount", "onCurrentProfileChanged");
             }
         };
+
     }
 
     @Override
@@ -66,7 +73,8 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
             this.setAccountId(profile.getId());
             this.setFirstName(profile.getFirstName());
             this.setLastName(profile.getLastName());
-            this.setProfileImage(profile.getProfilePictureUri(120, 120).toString());
+            this.setName(profile.getName());
+            this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
             this.notifLoginFinished(null);
         }
         else
@@ -96,8 +104,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     {
         if(null == mAccessToken)
         {
-            LoginManager loginManager = LoginManager.getInstance();
-            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+            this.loginManagerLogin();
         }
         else
         {
@@ -109,16 +116,21 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                     FacebookRequestError error = response.getError();
                     if(null == error)
                     {
-                        Log.d("FacebookAccount", object.toString());
-                        FacebookAccount.this.notifLoginFinished(null);
+                        try {
+                            FacebookAccount.this.getInfoFromJson(object);
+                            Log.d("FacebookAccount", object.toString());
+                            FacebookAccount.this.notifLoginFinished(null);
+                        }
+                        catch (JSONException e) {
+                            FacebookAccount.this.notifLoginFinished(e.getLocalizedMessage());
+                        }
                     }
                     else
                     {
                         FacebookRequestError.Category category = error.getCategory();
                         if(FacebookRequestError.Category.LOGIN_RECOVERABLE == category)
                         {   //认证失败了需要重新采用登陆框登陆
-                            LoginManager loginManager = LoginManager.getInstance();
-                            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+                            FacebookAccount.this.loginManagerLogin();
                         }
                         else
                         {
@@ -155,6 +167,22 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
             mProfileTracker.stopTracking();
     }
 
+    protected  void getInfoFromJson(JSONObject object) throws JSONException {
+        this.setAccountId(object.getString("id"));
+        this.setFirstName(object.getString("first_name"));
+        this.setLastName(object.getString("last_name"));
+        this.setName(object.getString("name"));
+        Profile profile = Profile.getCurrentProfile();
+        if(null != profile)
+            this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
+    }
+
+    protected  void loginManagerLogin()
+    {
+        LoginManager loginManager = LoginManager.getInstance();
+        loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+    }
+
     protected CallbackManager mCallbackManager;
 
     protected AccessTokenTracker mAccessTokenTracker;
@@ -164,4 +192,6 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     protected AccessToken mAccessToken;
 
     protected Profile mProfile;
+
+    protected int m_profileImageSize;
 }
