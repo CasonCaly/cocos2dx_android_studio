@@ -42,6 +42,55 @@ public:
 	virtual ~AccountDelegate(){}
 };
 
+class AccountFriend : public Ref
+{
+public:
+	void setId(const char* id);
+
+	const char* getId();
+
+	void setProfileImage(const char*  profileImage);
+
+	const char* getProfileIamge();
+
+	void setName(const char* name);
+
+    const char* getName();
+	
+	void setGender(const char* gender);
+		
+    const char* getGender();
+		
+    void setFristName(const char* firstName);
+    
+    const char* getFristName();
+
+    void setMiddleName(const char* middleName);
+
+    const char* getMiddleName();
+	
+    void setLastName(const char* lastName);
+
+    const char* getLastName();
+
+protected:
+	
+	std::string m_id;
+
+	std::string m_profileImage;
+
+	std::string m_name;
+
+	std::string m_firstName;
+
+	std::string m_middleName;
+
+	std::string m_lastName;
+
+	std::string m_gender;
+};
+
+
 class Account : public Ref
 {
     
@@ -121,6 +170,8 @@ public:
     
     void callFunctionEnd();
 	
+	void addFriend(AccountFriend* accountFriend);
+	
 public:
 
 	void setSyncParam(const char* key, const char* value);
@@ -140,6 +191,8 @@ public:
 protected:
     
     AccountDelegate* m_delegate;
+	
+	__Array m_friendList;
 };
 
 

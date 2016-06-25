@@ -4,10 +4,91 @@
 
 std::string s_accountTemp;
 #define AccountSDKClass     "com/lib/x/AccountSDK"
+#define AccountFriendClass     "com/lib/x/AccountSDK$Friend"
 
+void AccountFriend::setId(const char* id)
+{
+	if(nullptr != id)
+		m_id = id;
+}
+
+const char* AccountFriend::getId()
+{
+	return m_id.c_str();
+}
+
+
+void AccountFriend::setProfileImage(const char* profileImage)
+{
+	if(nullptr != profileImage)
+		m_profileImage = profileImage;
+}
+
+const char* AccountFriend::getProfileIamge()
+{
+	return m_profileImage.c_str();
+}
+
+void AccountFriend::setName(const char* name)
+{
+	if(nullptr != name)
+		m_name = name;
+}
+
+const char* AccountFriend::getName()
+{
+	return m_name.c_str();
+}
+
+void AccountFriend::setGender(const char* gender)
+{
+	if (nullptr != gender)
+		m_gender = gender;
+}
+
+const char* AccountFriend::getGender()
+{
+	return m_gender.c_str();
+}
+
+void AccountFriend::setFristName(const char* firstName)
+{
+	if(nullptr != firstName)
+		m_firstName = firstName;
+}
+
+const char* AccountFriend::getFristName()
+{
+	return m_firstName.c_str();
+}
+
+void AccountFriend::setMiddleName(const char* middleName)
+{
+	if(nullptr != middleName)
+		m_middleName = middleName;
+}
+
+const char* AccountFriend::getMiddleName()
+{
+	return m_middleName.c_str();
+}
+
+void AccountFriend::setLastName(const char* lastName)
+{
+	if(nullptr == lastName)
+		m_lastName = lastName;
+}
+
+const char* AccountFriend::getLastName()
+{
+	return m_lastName.c_str();
+}
+	
+///////////////////////////////////////////////////////////////////////	
 Account::Account()
 {
     m_delegate = nullptr;
+	m_friendList.init();
 }
 
 Account::~Account(){
@@ -131,7 +212,7 @@ const char* Account::getAppKey()
 }
 	
 void Account::clean(){
-	
+	m_friendList.removeAllObjects();
 }
 
 void Account::login(){
@@ -278,6 +359,11 @@ AccountDelegate* Account::getDelegate()
     return m_delegate;
 }
 
+void Account::addFriend(AccountFriend* accountFriend)
+{
+	m_friendList.addObject(accountFriend);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 class AccountRunLoopObserver : public RunLoopObserver
 {
@@ -300,7 +386,31 @@ public:
 
 	    if(m_operate == "didLoginFinished")
 	    {
-	    	const char* szError = m_errorCode.c_str();
+			account->clean();	
+			jobject jAccount = SdkJniHelper::getAccount();
+			int count = SdkJniHelper::getFriendCount(jAccount);
+			for(int i = 0; i < count; i++)
+			{
+				jobject jFriend = SdkJniHelper::getFriend(jAccount, i);
+				AccountFriend* accountFriend = new AccountFriend();
+				std::string strId = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getId");
+				accountFriend->setId(strId.c_str());
+				std::string strProfileImage = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getId");
+				accountFriend->setProfileImage(strProfileImage.c_str());
+				std::string strName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getName");
+				accountFriend->setName(strName.c_str());
+				std::string strGender = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getGender");
+				accountFriend->setGender(strGender.c_str());	
+				std::string strFirstName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getFirstName");
+				accountFriend->setFristName(strFirstName.c_str());
+				std::string strMiddleName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getMiddleName");
+				accountFriend->setMiddleName(strMiddleName.c_str());
+				std::string strLastname = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getLastName");
+				accountFriend->setLastName(strLastname.c_str());
+				account->addFriend(accountFriend);
+			}
+			
+			const char* szError = m_errorCode.c_str();
 	    	if(szError[0] == 0)
 	    		szError = nullptr;
  			_delegate->didLoginFinished(szError);

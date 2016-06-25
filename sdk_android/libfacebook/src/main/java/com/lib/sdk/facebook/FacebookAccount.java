@@ -10,9 +10,10 @@ import com.lib.x.AccountSDK;
 import com.facebook.*;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
+
 import  android.os.Bundle;
 import java.util.Arrays;
 
@@ -23,7 +24,6 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
 
     public FacebookAccount()
     {
-        m_profileImageSize = 120;
     }
 
     @Override
@@ -61,6 +61,16 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
 
     }
 
+    public void setProfileImageSize(int size)
+    {
+        m_profileImageSize = size;
+    }
+
+    public void setIsNeedFetchFriends(boolean isNeed)
+    {
+        m_needFetchFriends = isNeed;
+    }
+
     @Override
     /**
      *  FacebookCallback<LoginResult>
@@ -75,7 +85,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
             this.setLastName(profile.getLastName());
             this.setName(profile.getName());
             this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
-            this.notifLoginFinished(null);
+            this.onFetchMeSuccess();
         }
         else
         {
@@ -104,7 +114,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     {
         if(null == mAccessToken)
         {
-            this.loginManagerLogin();
+            this.useManagerLogin();
         }
         else
         {
@@ -118,8 +128,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                     {
                         try {
                             FacebookAccount.this.getInfoFromJson(object);
-                            Log.d("FacebookAccount", object.toString());
-                            FacebookAccount.this.notifLoginFinished(null);
+                            FacebookAccount.this.onFetchMeSuccess();
                         }
                         catch (JSONException e) {
                             FacebookAccount.this.notifLoginFinished(e.getLocalizedMessage());
@@ -130,7 +139,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                         FacebookRequestError.Category category = error.getCategory();
                         if(FacebookRequestError.Category.LOGIN_RECOVERABLE == category)
                         {   //认证失败了需要重新采用登陆框登陆
-                            FacebookAccount.this.loginManagerLogin();
+                            FacebookAccount.this.useManagerLogin();
                         }
                         else
                         {
@@ -177,10 +186,87 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
             this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
     }
 
-    protected  void loginManagerLogin()
+    protected  void useManagerLogin()
     {
         LoginManager loginManager = LoginManager.getInstance();
         loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
+    }
+
+    protected void onFetchMeSuccess()
+    {
+        if(m_needFetchFriends)
+        {
+            this.fetchMyInvitableFriends();
+        }
+        else
+        {
+            this.notifLoginFinished(null);
+        }
+    }
+
+    protected void fetchMyInvitableFriends()
+    {
+        GraphRequest.Callback callback = new GraphRequest.Callback()
+        {
+            public void onCompleted(GraphResponse response)
+            {
+                FacebookRequestError error = response.getError();
+                if (null == error)
+                {
+                    Log.d("FacebookAccount ", error.getErrorMessage());
+                }
+                else
+                {
+                    FacebookAccount.this.parseInvitalbeFriends(response.getJSONObject());
+                }
+                FacebookAccount.this.notifLoginFinished(null);
+            }
+        };
+
+        String path = String.format("me/invitable_friends?fields=id,name,first_name,last_name,pitcure.width(%d).height(%d)", m_profileImageSize, m_profileImageSize );
+        GraphRequest request = GraphRequest.newGraphPathRequest(mAccessToken, path, callback);
+        request.executeAsync();
+    }
+
+    protected void parseInvitalbeFriends(JSONObject friendsJson)
+    {
+        try {
+           if(!friendsJson.has("data"))
+               return;
+           JSONArray dataArray = friendsJson.getJSONArray("data");
+            for(int i = 0; i < dataArray.length(); i++)
+            {
+                JSONObject friendData = dataArray.getJSONObject(i);
+                Friend friend = new Friend();
+                if(friendData.has("id"))
+                    friend.setId(friendData.getString("id"));
+
+                if(friendData.has("name"))
+                    friend.setName(friendData.getString("name"));
+
+                if(friendData.has("first_name"))
+                    friend.setFirstName(friendData.getString("first_name"));
+
+                if(friendData.has("last_name"))
+                    friend.setLastName(friendData.getString("last_name"));
+
+                if(friendData.has("picture"))
+                {
+                    JSONObject picture = friendData.getJSONObject("picture");
+                    if(picture.has("data"))
+                    {
+                        JSONObject pircuteData = friendData.getJSONObject("data");
+                        if(pircuteData.has("url"))
+                            friend.setProfileImage(pircuteData.getString("url"));
+                    }
+                }
+                this.addFriend(friend);
+            }
+        }
+        catch (JSONException e)
+        {
+            Log.d("FacebookAccount ", e.getLocalizedMessage());
+        }
     }
 
     protected CallbackManager mCallbackManager;
@@ -193,5 +279,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
 
     protected Profile mProfile;
 
-    protected int m_profileImageSize;
+    protected int m_profileImageSize = 120;
+
+    protected boolean m_needFetchFriends = true;
 }

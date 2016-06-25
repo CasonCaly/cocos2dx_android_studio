@@ -2,13 +2,17 @@
 
 #define SDKCenterClass  "com/lib/x/SDKCenter"
 #define ISDKClass "com/lib/x/ISDK"
-#define AccountSDKClass "()Lcom/lib/x/AccountSDK;"
-#define PurchaseSDKClass "()Lcom/lib/x/PurchaseSDK;"
-#define AnalysisSDKClass "()Lcom/lib/x/AnalysisSDK;"
+#define AccountSDKClassReturn "()Lcom/lib/x/AccountSDK;"
+#define PurchaseSDKClassReturn "()Lcom/lib/x/PurchaseSDK;"
+#define AnalysisSDKClassReturn "()Lcom/lib/x/AnalysisSDK;"
+
+#define AccountSDKClass "com/lib/x/AccountSDK"
+#define AccountFriendClass     "com/lib/x/AccountSDK$Friend"
+#define AccountFriendClassReturn     "(I)Lcom/lib/x/AccountSDK$Friend;"
 
 jobject SdkJniHelper::getAccount(){
 	JniMethodInfo methodInfo;
-    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "account", AccountSDKClass))
+    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "account", AccountSDKClassReturn))
     {
     	CCLOG("can not find account");
 		return nullptr;
@@ -18,14 +22,14 @@ jobject SdkJniHelper::getAccount(){
 	
 jobject SdkJniHelper::getPurchase(){
 	JniMethodInfo methodInfo;
-    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "purchase", PurchaseSDKClass))
+    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "purchase", PurchaseSDKClassReturn))
 		return nullptr;	
 	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
 }
 	
 jobject SdkJniHelper::getAnalysis(){
 	JniMethodInfo methodInfo;
-    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "analysis", AnalysisSDKClass))
+    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "analysis", AnalysisSDKClassReturn))
 		return nullptr;	
 	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
 }
@@ -138,7 +142,6 @@ void SdkJniHelper::callFunctionEnd(jobject obj, const char* className){
 }
 
 void SdkJniHelper::setDefaultXXXSDKByClassName(const char* funName, const char* className){
-	CCLOG("setDefaultXXXSDKByClassName");
 	JniMethodInfo methodInfo;
     if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, funName, "(Ljava/lang/String;)V"))
 		return;
@@ -158,4 +161,20 @@ void SdkJniHelper::setDefaultXXXSDKByClassName(const char* funName, const char* 
 		jName = methodInfo.env->NewStringUTF(strClassName.c_str());
 	}
 	methodInfo.env->CallStaticVoidMethod(methodInfo.classID, methodInfo.methodID, jName);
+}
+
+int SdkJniHelper::getFriendCount(jobject jAccount)
+{
+	JniMethodInfo methodInfo;
+	if(!JniHelper::getMethodInfo(methodInfo, AccountSDKClass, "getFriendCount", "()I"))
+		return 0;
+	return methodInfo.env->CallIntMethod(jAccount, methodInfo.methodID);
+}
+
+jobject SdkJniHelper::getFriend(jobject jAccount, int index)
+{
+	JniMethodInfo methodInfo;
+	if(!JniHelper::getMethodInfo(methodInfo, AccountSDKClass, "getFriend", AccountFriendClassReturn))
+		return nullptr;
+	return methodInfo.env->CallObjectMethod(jAccount, methodInfo.methodID, index);
 }

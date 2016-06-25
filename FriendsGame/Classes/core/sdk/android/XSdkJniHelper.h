@@ -34,6 +34,10 @@ public:
 	static void callFunctionEnd(jobject obj, const char* className);
 
 	static void setDefaultXXXSDKByClassName(const char* funName, const char* className);
+	
+	static int getFriendCount(jobject jAccount);
+	
+	static jobject getFriend(jobject jAccount, int index);
 };
 
 #endif

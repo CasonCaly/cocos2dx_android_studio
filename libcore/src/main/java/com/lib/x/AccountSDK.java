@@ -2,6 +2,9 @@ package com.lib.x;
 
 import android.os.Bundle;
 import android.os.Message;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 /**
  * 
@@ -9,7 +12,103 @@ import android.os.Message;
  *
  */
 public class AccountSDK extends ISDK{
-	
+
+	public static class Friend
+	{
+		public void setId(String id)
+		{
+			if(null != id)
+				m_id = id;
+		}
+
+		public String getId()
+		{
+			return m_id;
+		}
+
+
+		public void setProfileImage(String profileImage)
+		{
+			if(null != profileImage)
+				m_profileImage = profileImage;
+		}
+
+		public String getProfileIamge()
+        {
+            return m_profileImage;
+        }
+
+		public void setName(String name)
+		{
+			if(null != name)
+				m_name = name;
+		}
+
+        public String getName()
+        {
+            return m_name;
+        }
+
+		public void setGender(String gender)
+		{
+			if (null != gender)
+				m_gender = gender;
+		}
+
+        public String getGender()
+        {
+            return m_gender;
+        }
+
+        public void setFirstName(String firstName)
+        {
+            if(null != firstName)
+                m_firstName = firstName;
+        }
+
+        public String getFirstName()
+        {
+            return m_firstName;
+        }
+
+        public void setMiddleName(String middleName)
+        {
+            if(null != middleName)
+                m_middleName = middleName;
+        }
+
+        public String getMiddleName()
+        {
+            return m_middleName;
+        }
+
+        public void setLastName(String lastName)
+        {
+            if(null == lastName)
+                m_lastName = lastName;
+        }
+
+        public String getLastName()
+        {
+            return m_lastName;
+        }
+
+
+		protected String m_id  = "";
+
+		protected String m_profileImage = "";
+
+		protected String m_name = "";
+
+        protected String m_firstName = "";
+
+        protected String m_middleName = "";
+
+        protected String m_lastName = "";
+
+		protected String m_gender = "";
+	}
+
 	public AccountSDK(){
 		super();
 	}
@@ -73,6 +172,8 @@ public class AccountSDK extends ISDK{
 		mEmail = "";		
 		mProfileImage = "";
 		mSessionId = "";
+        m_mapFriend.clear();
+        m_listFriend.clear();
 	}
 
 	/**
@@ -378,7 +479,7 @@ public class AccountSDK extends ISDK{
 	public String getSessionId(){
 		return mSessionId;
 	}
-	
+
 	/**
 	 * 获取渠道id
 	 * @return
@@ -398,7 +499,32 @@ public class AccountSDK extends ISDK{
 	public String getAppId(){
 		return mAppId;
 	}
-	
+
+    public void addFriend(Friend friend)
+    {
+        if(null == friend)
+            return;
+        String id = friend.getId();
+        Friend target = m_mapFriend.get(id);
+        if(null == target)
+        {
+            m_mapFriend.put(id, friend);
+            m_listFriend.add(friend);
+        }
+    }
+
+    public int getFriendCount()
+    {
+        return m_listFriend.size();
+    }
+
+    public Friend getFriend(int index)
+    {
+        if(index >= m_listFriend.size())
+            return null;
+        return m_listFriend.get(index);
+    }
+
 	private static native void didLoginFinished(String error);
 
 	private static native void didLoginCancel();
@@ -438,7 +564,11 @@ public class AccountSDK extends ISDK{
 	protected String mEmpty = "";		//辅助空字符
 	
 	protected String mSessionId = "";   //有些平台需要sessionid
-	
+
+    protected HashMap<String, Friend> m_mapFriend = new HashMap<String, Friend>();
+
+    protected ArrayList<Friend> m_listFriend = new ArrayList<Friend>();
+
 //以下都是和悬浮图片有关的方向
     public static int SDKToolBarAtTopLeft = 1;     /* 左上 */
     	    
