@@ -3,6 +3,8 @@
 #include "ui/CocosGUI.h"
 
 USING_NS_CC;
+#include "XSDKCenter.h"
+#include "XShare.h"
 
 using namespace cocostudio::timeline;
 
@@ -85,7 +87,22 @@ bool HelloWorld::init()
     }
     
     auto rootNode = CSLoader::createNode("MainScene.csb");
+	ui::Button* btn = ui::Button::create();
+	btn->setTitleText("Share");
+	btn->setTitleFontSize(50);
+	btn->setPosition(Vec2(480, 320));
 
+    btn->addClickEventListener([this](Ref* sender)
+        {
+            CCLOG("addClickEventListener");
+            Share* share = SDKCenter::getShare();
+            share->prepare();
+            share->shareLinkURL("http://developers.facebook.com/docs/android", "", "The 'Hello Facebook' sample  showcases simple Facebook integration", "Hello Facebook", "", 0);
+        }
+    );
+
+
+	rootNode->addChild(btn);
     addChild(rootNode);
 
     return true;

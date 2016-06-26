@@ -61,9 +61,9 @@ public:
 		
     const char* getGender();
 		
-    void setFristName(const char* firstName);
+    void setFirstName(const char* firstName);
     
-    const char* getFristName();
+    const char* getFirstName();
 
     void setMiddleName(const char* middleName);
 
@@ -169,8 +169,14 @@ public:
     void callFunction(const char* name);
     
     void callFunctionEnd();
+
+public:
 	
 	void addFriend(AccountFriend* accountFriend);
+	
+	int getFriendCount();
+	
+	AccountFriend* getFriend(int index);
 	
 public:
 

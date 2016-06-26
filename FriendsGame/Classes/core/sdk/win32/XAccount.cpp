@@ -5,9 +5,89 @@
 static std::string s_empty;
 static std::map<std::string, std::string> s_otherInfo;
 
+void AccountFriend::setId(const char* id)
+{
+	if(nullptr != id)
+		m_id = id;
+}
+
+const char* AccountFriend::getId()
+{
+	return m_id.c_str();
+}
+
+
+void AccountFriend::setProfileImage(const char* profileImage)
+{
+	if(nullptr != profileImage)
+		m_profileImage = profileImage;
+}
+
+const char* AccountFriend::getProfileIamge()
+{
+	return m_profileImage.c_str();
+}
+
+void AccountFriend::setName(const char* name)
+{
+	if(nullptr != name)
+		m_name = name;
+}
+
+const char* AccountFriend::getName()
+{
+	return m_name.c_str();
+}
+
+void AccountFriend::setGender(const char* gender)
+{
+	if (nullptr != gender)
+		m_gender = gender;
+}
+
+const char* AccountFriend::getGender()
+{
+	return m_gender.c_str();
+}
+
+void AccountFriend::setFirstName(const char* firstName)
+{
+	if(nullptr != firstName)
+		m_firstName = firstName;
+}
+
+const char* AccountFriend::getFirstName()
+{
+	return m_firstName.c_str();
+}
+
+void AccountFriend::setMiddleName(const char* middleName)
+{
+	if(nullptr != middleName)
+		m_middleName = middleName;
+}
+
+const char* AccountFriend::getMiddleName()
+{
+	return m_middleName.c_str();
+}
+
+void AccountFriend::setLastName(const char* lastName)
+{
+	if(nullptr == lastName)
+		m_lastName = lastName;
+}
+
+const char* AccountFriend::getLastName()
+{
+	return m_lastName.c_str();
+}
+
+///////////////////////////////////////////////////////////////////////	
 Account::Account()
 {
     m_delegate = nullptr;
+	m_friendList.init();
 }
 
 Account::~Account(){
@@ -220,4 +300,22 @@ void Account::setDelegate(AccountDelegate* _delegate)
 AccountDelegate* Account::getDelegate()
 {
     return m_delegate;
+}
+
+void Account::addFriend(AccountFriend* accountFriend)
+{
+	m_friendList.addObject(accountFriend);
+}
+
+int Account::getFriendCount()
+{
+	return (int)m_friendList.count();
+}
+
+AccountFriend* Account::getFriend(int index)
+{
+	if(index >= m_friendList.count())
+		return nullptr;
+	Ref* objFriend = m_friendList.getObjectAtIndex(index);
+	return dynamic_cast<AccountFriend*>(objFriend);
 }

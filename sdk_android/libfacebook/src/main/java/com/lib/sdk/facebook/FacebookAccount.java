@@ -16,14 +16,25 @@ import org.json.JSONObject;
 
 import  android.os.Bundle;
 import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Created by Nervecell on 2016/6/15.
  */
-public class FacebookAccount extends AccountSDK implements FacebookCallback<LoginResult>{
+public class FacebookAccount extends AccountSDK {
 
     public FacebookAccount()
     {
+    }
+
+    public void setProfileImageSize(int size)
+    {
+        m_profileImageSize = size;
+    }
+
+    public void setIsNeedFetchFriends(boolean isNeed)
+    {
+        m_needFetchFriends = isNeed;
     }
 
     @Override
@@ -35,7 +46,23 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         FacebookSdk.sdkInitialize(Cocos2dxActivity.getContext());
         mCallbackManager = CallbackManager.Factory.create();
 
-        LoginManager.getInstance().registerCallback(mCallbackManager, this);
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>()
+            {
+                public void onSuccess(LoginResult loginResult)
+                {
+                    //当授权成功之后我们再用图谱api登陆一遍，因为那样能获取更多个人信息
+                    FacebookAccount.this.useGraphLogin();
+                }
+
+                public void onCancel() {
+                    FacebookAccount.this.notifLoginCancel();
+                }
+
+                public void onError(FacebookException error) {
+                    FacebookAccount.this.notifLoginFinished(error.getLocalizedMessage());
+                }
+            }
+        );
 
         mAccessTokenTracker = new AccessTokenTracker() {
             @Override
@@ -58,55 +85,6 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
     @Override
     public void prepare()
     {
-
-    }
-
-    public void setProfileImageSize(int size)
-    {
-        m_profileImageSize = size;
-    }
-
-    public void setIsNeedFetchFriends(boolean isNeed)
-    {
-        m_needFetchFriends = isNeed;
-    }
-
-    @Override
-    /**
-     *  FacebookCallback<LoginResult>
-     */
-    public void onSuccess(LoginResult loginResult)
-    {
-        Profile profile = Profile.getCurrentProfile();
-        if(null != profile)
-        {
-            this.setAccountId(profile.getId());
-            this.setFirstName(profile.getFirstName());
-            this.setLastName(profile.getLastName());
-            this.setName(profile.getName());
-            this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
-            this.onFetchMeSuccess();
-        }
-        else
-        {
-            this.notifLoginFinished("Profile null");
-        }
-    }
-
-    @Override
-    /**
-     *  FacebookCallback<LoginResult>
-     */
-    public void onCancel() {
-        this.notifLoginCancel();
-    }
-
-    @Override
-    /**
-     *  FacebookCallback<LoginResult>
-     */
-    public void onError(FacebookException error) {
-        this.notifLoginFinished(error.getLocalizedMessage());
     }
 
     @Override
@@ -118,79 +96,83 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         }
         else
         {
-            GraphRequest.GraphJSONObjectCallback callback = new GraphRequest.GraphJSONObjectCallback()
+            Set<String> permissions = mAccessToken.getPermissions();
+            if(m_needFetchEmail)
             {
-                @Override
-                public void onCompleted(JSONObject object, GraphResponse response)
+                if(!permissions.contains("email"))
                 {
-                    FacebookRequestError error = response.getError();
-                    if(null == error)
-                    {
-                        try {
-                            FacebookAccount.this.getInfoFromJson(object);
-                            FacebookAccount.this.onFetchMeSuccess();
-                        }
-                        catch (JSONException e) {
-                            FacebookAccount.this.notifLoginFinished(e.getLocalizedMessage());
-                        }
-                    }
-                    else
-                    {
-                        FacebookRequestError.Category category = error.getCategory();
-                        if(FacebookRequestError.Category.LOGIN_RECOVERABLE == category)
-                        {   //认证失败了需要重新采用登陆框登陆
-                            FacebookAccount.this.useManagerLogin();
-                        }
-                        else
-                        {
-                            FacebookAccount.this.notifLoginFinished(error.getErrorMessage());
-                        }
-                    }
+                    //需要获取邮箱，但又没有邮箱权限，那么需要去重新授权
+                    this.useManagerLogin();
+                    return;
                 }
-            };
-
-
-            GraphRequest request = GraphRequest.newMeRequest(mAccessToken, callback);
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,name,gender,first_name,last_name,link");
-            request.setParameters(parameters);
-            request.executeAsync();
+            }
+            this.useGraphLogin();
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    protected  void useManagerLogin()
     {
-        if(null == mCallbackManager)
-            return;
-
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        LoginManager loginManager = LoginManager.getInstance();
+        if(m_needFetchEmail)
+            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends, email"));
+        else
+            loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
     }
 
-    @Override
-    public void onDestroy() {
-        if(null != mAccessTokenTracker)
-            mAccessTokenTracker.stopTracking();
+    protected void useGraphLogin()
+    {
+        GraphRequest.GraphJSONObjectCallback callback = new GraphRequest.GraphJSONObjectCallback()
+        {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response)
+            {
+                FacebookRequestError error = response.getError();
+                if(null == error)
+                {
+                    try {
+                        FacebookAccount.this.getInfoFromJson(object);
+                        FacebookAccount.this.onFetchMeSuccess();
+                    }
+                    catch (JSONException e) {
+                        FacebookAccount.this.notifLoginFinished(e.getLocalizedMessage());
+                    }
+                }
+                else
+                {
+                    FacebookRequestError.Category category = error.getCategory();
+                    if(FacebookRequestError.Category.LOGIN_RECOVERABLE == category)
+                    {   //认证失败了需要重新采用登陆框登陆
+                        FacebookAccount.this.useManagerLogin();
+                    }
+                    else
+                    {
+                        FacebookAccount.this.notifLoginFinished(error.getErrorMessage());
+                    }
+                }
+            }
+        };
 
-        if(null != mProfileTracker)
-            mProfileTracker.stopTracking();
+        AccessToken curAccessToken = mAccessToken == null ? AccessToken.getCurrentAccessToken() : mAccessToken;
+        GraphRequest request = GraphRequest.newMeRequest(curAccessToken, callback);
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,gender,first_name,last_name,link,email");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
+
 
     protected  void getInfoFromJson(JSONObject object) throws JSONException {
         this.setAccountId(object.getString("id"));
         this.setFirstName(object.getString("first_name"));
         this.setLastName(object.getString("last_name"));
         this.setName(object.getString("name"));
+        if(object.has("email"))
+            this.setEmail(object.getString("email"));
         Profile profile = Profile.getCurrentProfile();
         if(null != profile)
             this.setProfileImage(profile.getProfilePictureUri(m_profileImageSize, m_profileImageSize).toString());
     }
 
-    protected  void useManagerLogin()
-    {
-        LoginManager loginManager = LoginManager.getInstance();
-        loginManager.logInWithReadPermissions((Activity) Cocos2dxActivity.getContext(), Arrays.asList("public_profile", "user_friends"));
-    }
 
     protected void onFetchMeSuccess()
     {
@@ -213,18 +195,22 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                 FacebookRequestError error = response.getError();
                 if (null == error)
                 {
-                    Log.d("FacebookAccount ", error.getErrorMessage());
+                    FacebookAccount.this.parseInvitalbeFriends(response.getJSONObject());
                 }
                 else
                 {
-                    FacebookAccount.this.parseInvitalbeFriends(response.getJSONObject());
+                    Log.d("FacebookAccount ", error.getErrorMessage());
                 }
                 FacebookAccount.this.notifLoginFinished(null);
             }
         };
 
-        String path = String.format("me/invitable_friends?fields=id,name,first_name,last_name,pitcure.width(%d).height(%d)", m_profileImageSize, m_profileImageSize );
+        String path = "me/invitable_friends";
         GraphRequest request = GraphRequest.newGraphPathRequest(mAccessToken, path, callback);
+        Bundle bundle = new Bundle();
+        String fields = String.format("picture.width(120).height(120),id,name,first_name,last_name", m_profileImageSize, m_profileImageSize);
+        bundle.putString("fields", fields);
+        request.setParameters(bundle);
         request.executeAsync();
     }
 
@@ -255,7 +241,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
                     JSONObject picture = friendData.getJSONObject("picture");
                     if(picture.has("data"))
                     {
-                        JSONObject pircuteData = friendData.getJSONObject("data");
+                        JSONObject pircuteData = picture.getJSONObject("data");
                         if(pircuteData.has("url"))
                             friend.setProfileImage(pircuteData.getString("url"));
                     }
@@ -267,6 +253,24 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
         {
             Log.d("FacebookAccount ", e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(null == mCallbackManager)
+            return;
+
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onDestroy() {
+        if(null != mAccessTokenTracker)
+            mAccessTokenTracker.stopTracking();
+
+        if(null != mProfileTracker)
+            mProfileTracker.stopTracking();
     }
 
     protected CallbackManager mCallbackManager;
@@ -281,5 +285,7 @@ public class FacebookAccount extends AccountSDK implements FacebookCallback<Logi
 
     protected int m_profileImageSize = 120;
 
-    protected boolean m_needFetchFriends = true;
+    protected boolean m_needFetchFriends = true; //是否要抓取好友信息
+
+    protected boolean m_needFetchEmail = true;//是否要抓取邮箱信息
 }

@@ -55,7 +55,6 @@ class  SDKInstanceInfo
 		ISDK targetSdk = mMapSDK.get(className);
 		if(null == targetSdk)
 			mMapSDK.put(className, sdk);
-        mDefaultSDK = sdk;
 	}
 
 	public void setDefaultSDK(ISDK defaultSDK)
@@ -252,6 +251,7 @@ public class SDKCenter{
 		mAccount = new SDKInstanceInfo();
 		mPurchase = new SDKInstanceInfo();
 		mAnalysis = new SDKInstanceInfo();
+        mShare = new SDKInstanceInfo();
 		mHandler = new Handler();
         mMainThreadId = Thread.currentThread().getId();
 	}
@@ -277,6 +277,15 @@ public class SDKCenter{
 	    SDKCenter center = SDKCenter.getInstance();
 	    return (PurchaseSDK)center.mPurchase.getDefaultSDK();
 	}
+
+    /**
+     * 获取分享sdk实例
+     * @return
+     */
+    public static ShareSDK share(){
+        SDKCenter center = SDKCenter.getInstance();
+        return (ShareSDK)center.mShare.getDefaultSDK();
+    }
 
 	/**
 	 * 获取统计sdk实例
@@ -313,7 +322,16 @@ public class SDKCenter{
 		SDKCenter center = SDKCenter.getInstance();
 		center.mPurchase.addSDK(analysis);
 	}
-	
+
+    /**
+     * 添加分享sdk
+     * @param
+     */
+    public static void addShareSDK(ShareSDK share){
+        SDKCenter center = SDKCenter.getInstance();
+        center.mShare.addSDK(share);
+    }
+
 	/**
 	 * 添加默认账号sdk
 	 * @param 
@@ -340,6 +358,16 @@ public class SDKCenter{
 		SDKCenter center = SDKCenter.getInstance();
 		center.mAnalysis.setDefaultSDK(analysis);
 	}
+
+    /**
+     * 添加默认分享sdk
+     * @param
+     */
+    public static void setDefaultShareSDK(ShareSDK share)
+    {
+        SDKCenter center = SDKCenter.getInstance();
+        center.mShare.setDefaultSDK(share);
+    }
 
 	/**
 	 * 设置账号sdk的默认sdk类名
@@ -419,6 +447,8 @@ public class SDKCenter{
             return true;
         if(center.mAnalysis.hasSDK(sdkClassName))
             return true;
+        else if(center.mShare.hasSDK(sdkClassName))
+            return true;
         else
             return false;
     }
@@ -434,6 +464,7 @@ public class SDKCenter{
     {
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onCreate(savedInstanceState, true);
+        center.mShare.onCreate(savedInstanceState, true);
         center.mPurchase.onCreate(savedInstanceState, true);
         center.mAnalysis.onCreate(savedInstanceState, false);
     }
@@ -441,6 +472,7 @@ public class SDKCenter{
     public static void onResume(){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onResume(true);
+        center.mShare.onResume(true);
         center.mPurchase.onResume(true);
         center.mAnalysis.onResume(false);
     }
@@ -449,6 +481,7 @@ public class SDKCenter{
     public static void onPause(){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onPause(true);
+        center.mShare.onPause(true);
         center.mPurchase.onPause(true);
         center.mAnalysis.onPause(false);
     }
@@ -457,6 +490,7 @@ public class SDKCenter{
     public static void onDestroy(){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onDestroy(true);
+        center.mShare.onDestroy(true);
         center.mPurchase.onDestroy(true);
         center.mAnalysis.onDestroy(false);
     }
@@ -465,6 +499,7 @@ public class SDKCenter{
     public static  void onStart(){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onStart(true);
+        center.mShare.onStart(true);
         center.mPurchase.onStart(true);
         center.mAnalysis.onStart(false);
     }
@@ -473,6 +508,7 @@ public class SDKCenter{
     public static  void onStop(){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onStop(true);
+        center.mShare.onStop(true);
         center.mPurchase.onStop(true);
         center.mAnalysis.onStop(false);
     }
@@ -481,6 +517,7 @@ public class SDKCenter{
     public static void onActivityResult(int requestCode, int resultCode, Intent data){
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onActivityResult(requestCode, resultCode, data, true);
+        center.mShare.onActivityResult(requestCode, resultCode, data, true);
         center.mPurchase.onActivityResult(requestCode, resultCode, data, true);
         center.mAnalysis.onActivityResult(requestCode, resultCode, data, false);
     }
@@ -489,6 +526,7 @@ public class SDKCenter{
     {
         SDKCenter center = SDKCenter.getInstance();
         center.mAccount.onSaveInstanceState(outState, true);
+        center.mShare.onSaveInstanceState(outState, true);
         center.mPurchase.onSaveInstanceState(outState, true);
         center.mAnalysis.onSaveInstanceState(outState, false);
     }
@@ -502,7 +540,9 @@ public class SDKCenter{
 	protected SDKInstanceInfo mPurchase;
 	
 	protected SDKInstanceInfo mAnalysis;
-	
+
+    protected SDKInstanceInfo mShare;
+
 	protected Handler mHandler;
 	
 	protected boolean mIsInit = false;

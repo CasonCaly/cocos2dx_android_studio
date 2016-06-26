@@ -5,6 +5,7 @@
 #define AccountSDKClassReturn "()Lcom/lib/x/AccountSDK;"
 #define PurchaseSDKClassReturn "()Lcom/lib/x/PurchaseSDK;"
 #define AnalysisSDKClassReturn "()Lcom/lib/x/AnalysisSDK;"
+#define ShareSDKClassReturn "()Lcom/lib/x/ShareSDK;"
 
 #define AccountSDKClass "com/lib/x/AccountSDK"
 #define AccountFriendClass     "com/lib/x/AccountSDK$Friend"
@@ -30,6 +31,14 @@ jobject SdkJniHelper::getPurchase(){
 jobject SdkJniHelper::getAnalysis(){
 	JniMethodInfo methodInfo;
     if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "analysis", AnalysisSDKClassReturn))
+		return nullptr;	
+	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
+}
+	
+jobject SdkJniHelper::getShare()
+{
+	JniMethodInfo methodInfo;
+    if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "share", ShareSDKClassReturn))
 		return nullptr;	
 	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
 }

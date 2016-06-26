@@ -13,6 +13,8 @@ public:
 	
 	static jobject getAnalysis();
 	
+	static jobject getShare();
+	
 public:
 
 	static void prepareSDK(jobject obj);

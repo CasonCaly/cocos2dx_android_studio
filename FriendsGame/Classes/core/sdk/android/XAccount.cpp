@@ -51,13 +51,13 @@ const char* AccountFriend::getGender()
 	return m_gender.c_str();
 }
 
-void AccountFriend::setFristName(const char* firstName)
+void AccountFriend::setFirstName(const char* firstName)
 {
 	if(nullptr != firstName)
 		m_firstName = firstName;
 }
 
-const char* AccountFriend::getFristName()
+const char* AccountFriend::getFirstName()
 {
 	return m_firstName.c_str();
 }
@@ -364,6 +364,19 @@ void Account::addFriend(AccountFriend* accountFriend)
 	m_friendList.addObject(accountFriend);
 }
 
+int Account::getFriendCount()
+{
+	return (int)m_friendList.count();
+}
+
+AccountFriend* Account::getFriend(int index)
+{
+	if(index >= m_friendList.count())
+		return nullptr;
+	Ref* objFriend = m_friendList.getObjectAtIndex(index);
+	return dynamic_cast<AccountFriend*>(objFriend);
+}
+	
 ///////////////////////////////////////////////////////////////////////////////
 class AccountRunLoopObserver : public RunLoopObserver
 {
@@ -395,21 +408,27 @@ public:
 				AccountFriend* accountFriend = new AccountFriend();
 				std::string strId = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getId");
 				accountFriend->setId(strId.c_str());
-				std::string strProfileImage = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getId");
+				std::string strProfileImage = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getProfileIamge");
 				accountFriend->setProfileImage(strProfileImage.c_str());
 				std::string strName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getName");
 				accountFriend->setName(strName.c_str());
 				std::string strGender = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getGender");
 				accountFriend->setGender(strGender.c_str());	
 				std::string strFirstName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getFirstName");
-				accountFriend->setFristName(strFirstName.c_str());
+				accountFriend->setFirstName(strFirstName.c_str());
 				std::string strMiddleName = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getMiddleName");
 				accountFriend->setMiddleName(strMiddleName.c_str());
 				std::string strLastname = SdkJniHelper::getXXXReturnString(jFriend, AccountFriendClass, "getLastName");
 				accountFriend->setLastName(strLastname.c_str());
 				account->addFriend(accountFriend);
+				accountFriend->release();
+				//CCLOG("id %s img %s name %s gender %s firstName %s, middleName %s lastName %s", strId.c_str(), strProfileImage.c_str(), strName.c_str(), strGender.c_str(), strFirstName.c_str(), strMiddleName.c_str(), strLastname.c_str());
 			}
-			
+			// AccountFriend* firiends = account->getFriend(0);
+			// if(firiends)
+			// {
+				// CCLOG("id %s img %s name %s gender %s firstName %s, middleName %s lastName %s", firiends->getId(), firiends->getProfileIamge(), firiends->getName(), firiends->getGender(), firiends->getFirstName(), firiends->getMiddleName(), firiends->getLastName());
+			// }
 			const char* szError = m_errorCode.c_str();
 	    	if(szError[0] == 0)
 	    		szError = nullptr;

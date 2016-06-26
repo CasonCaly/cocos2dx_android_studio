@@ -84,7 +84,7 @@ public class AccountSDK extends ISDK{
 
         public void setLastName(String lastName)
         {
-            if(null == lastName)
+            if(null != lastName)
                 m_lastName = lastName;
         }
 

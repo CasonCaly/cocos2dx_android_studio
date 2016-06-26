@@ -36,12 +36,17 @@ public class AppActivity extends Cocos2dxActivity {
 
     protected void onCreate(final Bundle savedInstanceState)
     {
-        Log.d("AppActivity", "AppActivity:onCreate ");
         CoreMain.init();
         if(!SDKCenter.hasThisSDK(FacebookAccount.class.getName()))
         {
             FacebookAccount account = new FacebookAccount();
-            SDKCenter.addAccountSDK(account);
+            SDKCenter.setDefaultAccountSDK(account);
+        }
+
+        if(!SDKCenter.hasThisSDK(FacebookShare.class.getName()))
+        {
+            FacebookShare share = new FacebookShare();
+            SDKCenter.setDefaultShareSDK(share);
         }
 
         super.onCreate(savedInstanceState);

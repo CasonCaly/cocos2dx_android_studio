@@ -29,7 +29,7 @@ typedef enum _AccountLogoutFrom
 	LogoutFromAuto = 2
 }AccountLogoutFrom;
 
-class X_CORE_DLL AccountDelegate{
+class AccountDelegate{
 
 public:
 
@@ -42,8 +42,55 @@ public:
 	virtual ~AccountDelegate(){}
 };
 
+class AccountFriend : public Ref
+{
+public:
+	void setId(const char* id);
 
-class X_CORE_DLL Account : public Ref
+	const char* getId();
+
+	void setProfileImage(const char*  profileImage);
+
+	const char* getProfileIamge();
+
+	void setName(const char* name);
+
+    const char* getName();
+	
+	void setGender(const char* gender);
+		
+    const char* getGender();
+		
+    void setFirstName(const char* firstName);
+    
+    const char* getFirstName();
+
+    void setMiddleName(const char* middleName);
+
+    const char* getMiddleName();
+	
+    void setLastName(const char* lastName);
+
+    const char* getLastName();
+
+protected:
+	
+	std::string m_id;
+
+	std::string m_profileImage;
+
+	std::string m_name;
+
+	std::string m_firstName;
+
+	std::string m_middleName;
+
+	std::string m_lastName;
+
+	std::string m_gender;
+};
+
+class Account : public Ref
 {
     
 public:
@@ -121,7 +168,15 @@ public:
     void callFunction(const char* name);
     
     void callFunctionEnd();
-    
+	
+ public:
+	
+	void addFriend(AccountFriend* accountFriend);
+	
+	int getFriendCount();
+	
+	AccountFriend* getFriend(int index);  
+	
 public:
 
 	void setSyncParam(const char* key, const char* value);
@@ -141,6 +196,8 @@ public:
 protected:
     
     AccountDelegate* m_delegate;
+	
+	__Array m_friendList;
 };
 
 #endif
