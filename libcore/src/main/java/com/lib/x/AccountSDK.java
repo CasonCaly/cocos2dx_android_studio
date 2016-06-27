@@ -112,6 +112,15 @@ public class AccountSDK extends ISDK{
 	public AccountSDK(){
 		super();
 	}
+
+	public boolean isDefault()
+	{
+		String className = this.getClass().getName();
+		if(className.equals(SDKCenter.DefaultAccoutSDKName))
+			return true;
+		else
+			return false;
+	}
 	
 //以下函数都可以被复写
 	/**

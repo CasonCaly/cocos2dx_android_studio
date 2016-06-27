@@ -12,7 +12,16 @@ public class PurchaseSDK extends ISDK{
 	public PurchaseSDK() {
 		super();
 	}
-	
+
+	public boolean isDefault()
+	{
+		String className = this.getClass().getName();
+		if(className.equals(SDKCenter.DefaultPurchaseSDKName))
+			return true;
+		else
+			return false;
+	}
+
 	public void notifyPurchaseFinish(String error){
 		PurchaseSDK.didPurchaseFinish(error);
 	}

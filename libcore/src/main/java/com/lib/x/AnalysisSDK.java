@@ -15,6 +15,15 @@ public class AnalysisSDK extends ISDK{
 		super();
 	}
 
+	public boolean isDefault()
+	{
+		String className = this.getClass().getName();
+		if(className.equals(SDKCenter.DefaultAnalysisSDKName))
+			return true;
+		else
+			return false;
+	}
+
 	public void trackEvent(String event){
 		
 	}

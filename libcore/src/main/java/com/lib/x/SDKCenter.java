@@ -552,4 +552,12 @@ public class SDKCenter{
 	protected boolean mIsAutoRotation;
 
     protected long mMainThreadId;
+
+    public static final String DefaultAccoutSDKName = "com.lib.x.AccountSDK";
+
+    public static final String DefaultAnalysisSDKName = "com.lib.x.AnalysisSDK";
+
+    public static final String DefaultPurchaseSDKName = "com.lib.x.PurchaseSDK";
+
+    public static final String DefaultShareSDKName = "com.lib.x.ShareSDK";
 }

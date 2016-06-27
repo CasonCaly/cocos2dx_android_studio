@@ -17,6 +17,8 @@ public:
 	
 public:
 
+	static bool isDefault(jobject jsdk);
+
 	static void prepareSDK(jobject obj);
 
 	static void setXXXWithString(jobject obj, const char* szValue);

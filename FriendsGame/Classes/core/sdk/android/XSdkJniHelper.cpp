@@ -15,7 +15,6 @@ jobject SdkJniHelper::getAccount(){
 	JniMethodInfo methodInfo;
     if(!JniHelper::getStaticMethodInfo(methodInfo, SDKCenterClass, "account", AccountSDKClassReturn))
     {
-    	CCLOG("can not find account");
 		return nullptr;
 	}
 	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
@@ -43,6 +42,20 @@ jobject SdkJniHelper::getShare()
 	return methodInfo.env->CallStaticObjectMethod(methodInfo.classID, methodInfo.methodID);
 }
 	
+bool SdkJniHelper::isDefault(jobject jsdk)
+{
+	if(nullptr == jsdk)
+		return false;
+
+	JNIEnv* env = JniHelper::getEnv();
+	jclass sdkClass = env->GetObjectClass(jsdk);
+ 	jmethodID methodID = env->GetMethodID(sdkClass, "isDefault","()Z");
+ 	if(methodID == nullptr)
+ 		return false;
+
+	return env->CallBooleanMethod(jsdk, methodID);
+}
+
 void SdkJniHelper::setXXXWithString(jobject obj, const char* szValue){
 	
 }
@@ -50,7 +63,6 @@ void SdkJniHelper::setXXXWithString(jobject obj, const char* szValue){
 void SdkJniHelper::prepareSDK(jobject obj){
 	if(nullptr == obj)
 		return;
-	CCLOG("prepareSDK");
 	JniMethodInfo methodInfo;
     if(!JniHelper::getMethodInfo(methodInfo, ISDKClass, "prepareSDK", "()V"))
 		return;	

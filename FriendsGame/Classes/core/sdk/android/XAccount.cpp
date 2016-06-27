@@ -101,7 +101,8 @@ void Account::prepare(){
 }
 
 bool Account::isDefault(){
-	return true;
+	jobject account = SdkJniHelper::getAccount();
+	return SdkJniHelper::isDefault(account);
 }
 
 bool Account::hasUserCenter(){

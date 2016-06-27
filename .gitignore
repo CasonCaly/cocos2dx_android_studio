@@ -78,3 +78,6 @@ FriendsGame/proj.android-studio/.idea/misc.xml
 FriendsGame/proj.android-studio/app/FriendsGame.iml
 
 libcore/libcore.iml
+*.iml
+FriendsGame/proj.android-studio/app/FriendsGame.iml
+*.iml

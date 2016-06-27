@@ -22,7 +22,13 @@ public class ISDK extends Handler{
 		mFunParams = new HashMap<String, String>();
 		mCocos2dxActivity = null;
 	}
-	
+
+	public boolean isDefault()
+	{
+		return true;
+	}
+
+
 //以下都是功能性函数
 	/**
 	 * 改函数用于用于被jni调用

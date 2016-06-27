@@ -19,7 +19,8 @@ void Purchase::prepare()
 
 bool Purchase::isDefault()
 {
-	return true;
+	jobject purchase = SdkJniHelper::getPurchase();
+	return SdkJniHelper::isDefault(purchase);
 }
 
 void Purchase::startPurchase()

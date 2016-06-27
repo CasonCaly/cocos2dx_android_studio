@@ -40,6 +40,8 @@ public class AppActivity extends Cocos2dxActivity {
         if(!SDKCenter.hasThisSDK(FacebookAccount.class.getName()))
         {
             FacebookAccount account = new FacebookAccount();
+            boolean isDefault = account.isDefault();
+
             SDKCenter.setDefaultAccountSDK(account);
         }
 

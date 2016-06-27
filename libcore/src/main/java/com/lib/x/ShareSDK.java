@@ -7,6 +7,16 @@ import android.os.Message;
  * Created by Nervecell on 2016/6/26.
  */
 public class ShareSDK extends ISDK{
+
+    public boolean isDefault()
+    {
+        String className = this.getClass().getName();
+        if(className.equals(SDKCenter.DefaultShareSDKName))
+            return true;
+        else
+            return false;
+    }
+
     //分享文字
     public void shareText(String text, int scene)
     {

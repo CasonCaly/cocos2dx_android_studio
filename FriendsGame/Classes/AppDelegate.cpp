@@ -53,7 +53,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	account->prepare();
     account->setDelegate(this);
     account->login();
-	CCLOG("applicationDidFinishLaunching account login  ");
+    bool isDefault = account->isDefault();
+
+	CCLOG("applicationDidFinishLaunching account login  %d", isDefault);
     return true;
 }
 
