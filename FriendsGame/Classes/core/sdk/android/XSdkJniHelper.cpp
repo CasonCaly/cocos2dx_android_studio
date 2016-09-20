@@ -77,7 +77,10 @@ std::string SdkJniHelper::getXXXReturnString(jobject obj, const char* className,
     if(!JniHelper::getMethodInfo(methodInfo, className, functionName, "()Ljava/lang/String;"))
 		return "";
 	jstring ret = (jstring)methodInfo.env->CallObjectMethod(obj, methodInfo.methodID);
-	return JniHelper::jstring2string(ret);
+	std::string str = JniHelper::jstring2string(ret);
+	methodInfo.env->DeleteLocalRef(str);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
+	return str;
 }
 
 void SdkJniHelper::setOtherInfo(jobject obj, const char* className, const char* key, const char* value){

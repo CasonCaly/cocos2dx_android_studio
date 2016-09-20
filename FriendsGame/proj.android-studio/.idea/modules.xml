@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/FriendsGame.iml" filepath="$PROJECT_DIR$/app/FriendsGame.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../sdk_android/libfacebook/libs/facebook-android-sdk-master/facebook/facebook.iml" filepath="$PROJECT_DIR$/../../sdk_android/libfacebook/libs/facebook-android-sdk-master/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/../cocos2d/cocos/platform/android/libcocos2dx/libcocos2dx.iml" filepath="$PROJECT_DIR$/../cocos2d/cocos/platform/android/libcocos2dx/libcocos2dx.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../libcore/libcore.iml" filepath="$PROJECT_DIR$/../../libcore/libcore.iml" />
       <module fileurl="file://$PROJECT_DIR$/../../sdk_android/libfacebook/libfacebook.iml" filepath="$PROJECT_DIR$/../../sdk_android/libfacebook/libfacebook.iml" />
