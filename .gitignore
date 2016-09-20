@@ -52,7 +52,6 @@ FriendsGame/proj.win10
 FriendsGame/FriendsGame.ccs
 FriendsGame/Resources
 FriendsGame/config.json
-FriendsGame/proj.ios_mac
 FriendsGame/proj.win32
 FriendsGame/FriendsGame.cfg
 FriendsGame/cocos2d
@@ -81,4 +80,4 @@ libcore/libcore.iml
 *.iml
 FriendsGame/proj.android-studio/app/FriendsGame.iml
 *.iml
-FriendsGame/proj.android-studio/app/FriendsGame.iml
+riendsGame/proj.android-studio/app/FriendsGame.iml
