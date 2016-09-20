@@ -1,6 +1,13 @@
 #import "SDKCenter.h"
 #include "XAccount.h"
 
+static std::string s_empty;
+
+const char* safeNString2String(NSString* ns){
+    return ns == nil ? s_empty.c_str() : [ns UTF8String];
+}
+
+
 @interface AccountSDKCallback: NSObject<AccountSDKDelegate>
 {
     
@@ -36,6 +43,23 @@
     const char* szError = [error UTF8String];
     if(szError && (szError[0] == 0))
         szError = nullptr;
+    
+    AccountSDK* accountSDK = [OCSDKCenter account];
+    NSInteger count = accountSDK.listFriend.count;
+    for(NSInteger i = 0; i < count; i++){
+        FriendOC* friendOC = (FriendOC*)[accountSDK.listFriend objectAtIndex:i];
+        AccountFriend* af = new AccountFriend();
+        af->setId(safeNString2String(friendOC.friendId));
+        af->setName(safeNString2String(friendOC.name));
+        af->setFirstName(safeNString2String(friendOC.firstName));
+        af->setLastName(safeNString2String(friendOC.lastName));
+        af->setMiddleName(safeNString2String(friendOC.middleName));
+        af->setGender(safeNString2String(friendOC.gender));
+        af->setProfileImage(safeNString2String(friendOC.profileImage));
+        self.account->addFriend(af);
+        af->release();
+    }
+    
     _delegate->didLoginFinished(szError);
     
 }
@@ -141,17 +165,13 @@ const char* AccountFriend::getLastName()
 }
 
 
-static std::string s_empty;
-
-const char* safeNString2String(NSString* ns){
-    return ns == nil ? s_empty.c_str() : [ns UTF8String];
-}
 
 Account::Account()
 {
     m_delegate = nullptr;
     AccountSDK* accountSDK = [OCSDKCenter account];
     accountSDK.delegate = [[AccountSDKCallback alloc] initWithAccount:this];
+    m_friendList.init();
 }
 
 Account::~Account()
@@ -254,8 +274,8 @@ const char* Account::getAppKey()
     return safeNString2String(accountSDK.appkey);
 }
 
-void Account::clean()
-{
+void Account::clean(){
+    m_friendList.removeAllObjects();
 }
 
 void Account::login(){
@@ -424,8 +444,7 @@ int Account::getFriendCount(){
 	return (int)m_friendList.count();
 }
 
-AccountFriend* Account::getFriend(int index)
-{
+AccountFriend* Account::getFriend(int index){
 	if(index >= m_friendList.count())
 		return nullptr;
 	Ref* objFriend = m_friendList.getObjectAtIndex(index);
