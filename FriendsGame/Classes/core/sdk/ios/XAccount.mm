@@ -14,6 +14,8 @@
 
 -(void)didLogoutFinished:(LogoutFrom)from;
 
+-(void)didLoginCancel;
+
 @end
 
 @implementation AccountSDKCallback
@@ -46,6 +48,17 @@
         return;
     _delegate->didLogoutFinished((AccountLogoutFrom)from);
 }
+
+
+-(void)didLoginCancel{
+    if(nullptr == self.account)
+        return;
+    AccountDelegate* _delegate = self.account->getDelegate();
+    if(nullptr == _delegate)
+        return;
+    _delegate->didLoginCancel();
+}
+
 
 @end
 
@@ -137,7 +150,7 @@ const char* safeNString2String(NSString* ns){
 Account::Account()
 {
     m_delegate = nullptr;
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     accountSDK.delegate = [[AccountSDKCallback alloc] initWithAccount:this];
 }
 
@@ -147,97 +160,97 @@ Account::~Account()
 
 void Account::prepare()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK prepareSDK];
 }
 
 bool Account::isDefault()
 {
-	AccountSDK* accountSDK = [SDKCenter account];
+	AccountSDK* accountSDK = [OCSDKCenter account];
 	return accountSDK.isDefault;
 }
 
 bool Account::hasUserCenter()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return accountSDK.hasUserCenter;
 }
 
 const char* Account::getName()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.name);
 }
 
 const char* Account::getId()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.accountId);
 }
 
 const char* Account::getSessionId()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.sessionId);
 }
 
 const char* Account::getGender()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.gender);
 }
 
 const char* Account::getFirstName()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.firstName);
 }
 
 const char* Account::getLastName()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.lastName);
 }
 
 const char* Account::getLocale()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.locale);
 }
 
 const char* Account::getEmail()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.email);
 }
 
 const char* Account::getProfileImage()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.profileImage);
 }
 
 const char* Account::getChannelId()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.channelId);
 }
 
 const char* Account::getChannelName()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.channelName);
 }
 
 const char* Account::getAppId()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.appid);
 }
 
 const char* Account::getAppKey()
 {
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return safeNString2String(accountSDK.appkey);
 }
 
@@ -246,37 +259,37 @@ void Account::clean()
 }
 
 void Account::login(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK login];
 }
 
 void Account::logout(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK logout];
 }
 
 void Account::swtichAccount(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK swtichAccount];
 }
 
 void Account::gotoUserCetner(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK gotoUserCetner];
 }
 
 void Account::gotoBBS(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK gotoBBS];
 }
 
 void Account::gotoEnterAPPCetner(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK gotoEnterAPPCetner];
 }
 
 void Account::showToolbar(bool visible){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK showToolbar:visible];
 }
 
@@ -306,43 +319,43 @@ void Account::showToolbar(bool visible, AccountToolBarPlace place)
             sdkPlace = SDKToolBarAtMiddleLeft;
             break;
     }
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK showToolbar:visible withToolBarPlace:sdkPlace];
 }
 
 const char* Account::getOtherInfo(const char* key){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return [accountSDK getOtherInfo:key];
 }
 
 void Account::setOtherInfo(const char* key, const char* value){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return [accountSDK setOtherInfo:key value:value];
 }
 
 void Account::callFuntionBegin(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return [accountSDK callFuntionBegin];
 }
 
 void Account::addFunctionParam(const char* key, const char* value){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return [accountSDK addFunctionParam:key value:value];
 }
 
 void Account::callFunction(const char* name){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     return [accountSDK callFunction: [NSString stringWithUTF8String:name]];
 }
 
 void Account::callFunctionEnd(){
-    AccountSDK* accountSDK = [SDKCenter account];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     [accountSDK callFunctionEnd];
 }
 
 void Account::setSyncParam(const char* key, const char* value){
 	if(key && value){
-		AccountSDK* accountSDK = [SDKCenter account];
+		AccountSDK* accountSDK = [OCSDKCenter account];
 		[accountSDK setSyncParam:[NSString stringWithUTF8String:key] value:[NSString stringWithUTF8String:value]];
 	}
 }
@@ -351,14 +364,14 @@ const char* Account::getSyncParam(const char* key){
 	if(nullptr == key)
 		return s_empty.c_str();
 	
-	AccountSDK* accountSDK = [SDKCenter account];
+	AccountSDK* accountSDK = [OCSDKCenter account];
 	NSString* value = [accountSDK getSyncParam:[NSString stringWithUTF8String:key]];
 	return safeNString2String(value);
 }
 
 std::map<std::string, std::string> Account::getAllSyncParam(){
 	std::map<std::string, std::string> allSync;
-	AccountSDK* accountSDK = [SDKCenter account];
+	AccountSDK* accountSDK = [OCSDKCenter account];
 	NSDictionary* dic = [accountSDK getAllSyncParam];
 	NSArray* allKey = [dic allKeys];
 	for(NSInteger i = 0; i < [allKey count]; i++)
@@ -371,13 +384,13 @@ std::map<std::string, std::string> Account::getAllSyncParam(){
 }
 
 void Account::cleanSyncParam(){
-	AccountSDK* accountSDK = [SDKCenter account];
+	AccountSDK* accountSDK = [OCSDKCenter account];
 	[accountSDK cleanSyncParam];
 }
 
 void Account::setDefaultAccountSDKByClassName(const char* className){
-    [[SDKCenter account] clear];
-    AccountSDK* accountSDK = [SDKCenter account];
+    [[OCSDKCenter account] clear];
+    AccountSDK* accountSDK = [OCSDKCenter account];
     accountSDK.delegate = [[AccountSDKCallback alloc] initWithAccount:this];
 }
 

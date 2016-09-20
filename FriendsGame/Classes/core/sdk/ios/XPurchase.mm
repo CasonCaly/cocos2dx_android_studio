@@ -52,7 +52,7 @@ NSString* safeString2NSString(const char* str){
 
 Purchase::Purchase(){
     m_delegate = nullptr;
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.delegate = [[PurchaseSDKCallback alloc] initWithPurchase:this];
 }
 
@@ -60,62 +60,62 @@ Purchase::~Purchase(){
 }
 
 void Purchase::prepare(){
-    PurchaseSDK* purchase = [SDKCenter purchase];
+    PurchaseSDK* purchase = [OCSDKCenter purchase];
     [purchase prepareSDK];
 }
 
 bool Purchase::isDefault(){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     return purchaseSDK.isDefault;
 }
 
 void Purchase::startPurchase(){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK startPurchase];
 }
 
 void Purchase::setOrderSerial(const char* orderSerial){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.orderSerial = safeString2NSString(orderSerial);
 }
 
 void Purchase::setPrice(float price){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.price = price;
 }
 
 void Purchase::setPayId(const char* payId){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.payid = safeString2NSString(payId);
 }
 
 void Purchase::setGameUserServer(const char* gameUserServer){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.gameUserServer = safeString2NSString(gameUserServer);
 }
 
 void Purchase::setName(const char* name){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.name = safeString2NSString(name);
 }
 
 void Purchase::setGameUserId(const char* userId){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.gameUserId = safeString2NSString(userId);
 }
 
 void Purchase::setGameUserName(const char* userName){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.gameUserName = safeString2NSString(userName);
 }
 
 void Purchase::setPayUrl(const char* payUrl){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.payUrl = safeString2NSString(payUrl);
 }
 
 void Purchase::setProductType(const char* szProductType){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.productType = safeString2NSString(szProductType);
 }
 
@@ -124,40 +124,40 @@ const char* Purchase::getOtherInfo(const char* key){
 }
 
 void Purchase::setOtherInfo(const char* key, const char* value){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK setOtherInfo:key value:value];
 }
 
 void Purchase::callFuntionBegin(){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK callFuntionBegin];
 }
 
 void Purchase::addFunctionParam(const char* key, const char* value){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK addFunctionParam:key value:value];
 }
 
 void Purchase::callFunction(const char* name){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK callFunction:safeString2NSString(name)];
 }
 
 void Purchase::callFunctionEnd(){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK callFunctionEnd];
 }
 
 void Purchase::setDefaultPurchaseClass(const char* className){
-    [[SDKCenter purchase] clear];
+    [[OCSDKCenter purchase] clear];
     //[SDKCenter setDefaultPurchaseClass :[NSString stringWithUTF8String:className]];
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     purchaseSDK.delegate = [[PurchaseSDKCallback alloc] initWithPurchase:this];
 }
 
 void Purchase::setSyncParam(const char* key, const char* value){
     if(key && value){
-        PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+        PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
         [purchaseSDK setSyncParam:[NSString stringWithUTF8String:key] value:[NSString stringWithUTF8String:value]];
     }
 }
@@ -166,14 +166,14 @@ const char* Purchase::getSyncParam(const char* key){
     if(nullptr == key)
         return s_empty.c_str();
     
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     NSString* value = [purchaseSDK getSyncParam:[NSString stringWithUTF8String:key]];
     return value ? s_empty.c_str() : [value UTF8String];
 }
 
 std::map<std::string, std::string> Purchase::getAllSyncParam(){
     std::map<std::string, std::string> allSync;
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     NSDictionary* dic = [purchaseSDK getAllSyncParam];
     NSArray* allKey = [dic allKeys];
     for(NSInteger i = 0; i < [allKey count]; i++){
@@ -187,7 +187,7 @@ std::map<std::string, std::string> Purchase::getAllSyncParam(){
 }
 
 void Purchase::cleanSyncParam(){
-    PurchaseSDK* purchaseSDK = [SDKCenter purchase];
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
     [purchaseSDK cleanSyncParam];
 }
 

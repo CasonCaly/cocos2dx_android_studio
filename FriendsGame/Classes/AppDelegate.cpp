@@ -49,7 +49,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->runWithScene(scene);
 	CCLOG("applicationDidFinishLaunching");
 	Account* account = SDKCenter::getAccount();
-    account->setDefaultAccountSDKByClassName("com/lib/sdk/facebook/FacebookAccount");
 	account->prepare();
     account->setDelegate(this);
     account->login();
