@@ -1,5 +1,6 @@
 package com.lib.x;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,16 +11,16 @@ public class CoreMain {
 
     private static boolean sIsInit = false;
 
-    public static void init()
+    public static void init(Activity activity)
     {
         if(sIsInit)
             return;
-        SDKCenter.getInstance().init();
+        SDKCenter.getInstance().init(activity);
     }
 
-    public static void onCreate(final Bundle savedInstanceState)
+    public static void onCreate(Activity activity, final Bundle savedInstanceState)
     {
-        SDKCenter.onCreate(savedInstanceState);
+        SDKCenter.onCreate(activity, savedInstanceState);
     }
 
     public static void onResume()

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +29,14 @@ public class ISDK extends Handler{
 		return true;
 	}
 
+
+	public Activity getGameActivity(){
+		return mGameActivity;
+	}
+
+	public void setGameActivity(Activity activity){
+		mGameActivity = activity;
+	}
 
 //以下都是功能性函数
 	/**
@@ -248,6 +257,8 @@ public class ISDK extends Handler{
 	protected Cocos2dxActivity mCocos2dxActivity;
 	
 	protected boolean mIsPrepare = false;
+
+	protected Activity mGameActivity;
 
 // 以下定义的是GL线程和主线程之间的消息号
 	

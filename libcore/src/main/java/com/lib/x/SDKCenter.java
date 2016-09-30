@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -244,9 +245,10 @@ public class SDKCenter{
 		return SDKCenter.sIntance;
 	}
 
-	public void init(){
+	public void init(Activity activity){
 		if(mIsInit)
 			return;
+        mGameActivity = activity;
 		mIsInit = true;
 		mAccount = new SDKInstanceInfo();
 		mPurchase = new SDKInstanceInfo();
@@ -460,9 +462,10 @@ public class SDKCenter{
     }
 
     // 以下函数都是为了能够被Activity的on系列函数能够被调用
-    public static void onCreate(final Bundle savedInstanceState)
+    public static void onCreate(Activity activity, final Bundle savedInstanceState)
     {
         SDKCenter center = SDKCenter.getInstance();
+        center.setGameActivity(activity);
         center.mAccount.onCreate(savedInstanceState, true);
         center.mShare.onCreate(savedInstanceState, true);
         center.mPurchase.onCreate(savedInstanceState, true);
@@ -531,7 +534,13 @@ public class SDKCenter{
         center.mAnalysis.onSaveInstanceState(outState, false);
     }
 
+    public void setGameActivity(Activity activity){
+        mGameActivity = activity;
+    }
 
+    public Activity getGameActivity(){
+        return mGameActivity;
+    }
 
 	protected static SDKCenter sIntance = null;
 	
@@ -542,6 +551,8 @@ public class SDKCenter{
 	protected SDKInstanceInfo mAnalysis;
 
     protected SDKInstanceInfo mShare;
+
+    protected Activity mGameActivity;
 
 	protected Handler mHandler;
 	

@@ -6,6 +6,8 @@ include ':libcore'
 project(':libcore').projectDir = new File(settingsDir, '../../libcore')
 include ':libfacebook'
 project(':libfacebook').projectDir = new File(settingsDir, '../../sdk_android/libfacebook')
+include ':libgoogle_pay'
+project(':libgoogle_pay').projectDir = new File(settingsDir, '../../sdk_android/libgoogle_pay')
 //include ':facebook'
 //project(':facebook').projectDir = new File(settingsDir, '../../sdk_android/libfacebook/libs/facebook-android-sdk-master/facebook')
 //include ':HelloFacebookSample'
