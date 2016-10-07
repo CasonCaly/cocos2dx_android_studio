@@ -98,11 +98,16 @@ void Account::prepare(){
 	CCLOG("Account::prepare");
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::prepareSDK(account);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 bool Account::isDefault(){
 	jobject account = SdkJniHelper::getAccount();
-	return SdkJniHelper::isDefault(account);
+	bool isDefault = SdkJniHelper::isDefault(account);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
+	return isDefault;
 }
 
 bool Account::hasUserCenter(){
@@ -113,7 +118,10 @@ const char* Account::getName(){
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getName");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
+	
 }
 
 const char* Account::getId()
@@ -121,6 +129,8 @@ const char* Account::getId()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getAccountId");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -129,6 +139,8 @@ const char* Account::getSessionId()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getSessionId");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);	
 	return s_accountTemp.c_str();
 }
 
@@ -137,6 +149,8 @@ const char* Account::getGender()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getGender");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);	
 	return s_accountTemp.c_str();
 }
 
@@ -145,6 +159,8 @@ const char* Account::getFirstName()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getFirstName");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);	
 	return s_accountTemp.c_str();
 }
 
@@ -153,6 +169,8 @@ const char* Account::getLastName()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getLastName");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);	
 	return s_accountTemp.c_str();
 }
 
@@ -161,6 +179,8 @@ const char* Account::getLocale()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getLocale");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);	
 	return s_accountTemp.c_str();
 }
 
@@ -169,6 +189,8 @@ const char* Account::getEmail()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getEmail");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -177,6 +199,8 @@ const char* Account::getProfileImage()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getProfileImage");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -185,6 +209,8 @@ const char* Account::getChannelId()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getChannelId");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -193,6 +219,8 @@ const char* Account::getChannelName()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getChannelName");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -201,6 +229,8 @@ const char* Account::getAppId()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getAppId");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
@@ -209,6 +239,8 @@ const char* Account::getAppKey()
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getXXXReturnString(account, AccountSDKClass, "getAppKey");
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 	
@@ -222,6 +254,8 @@ void Account::login(){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Account::logout(){
@@ -230,6 +264,9 @@ void Account::logout(){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
+
 	if (m_delegate)
 		m_delegate->didLogoutFinished(LogoutFromManual);
 }
@@ -240,6 +277,8 @@ void Account::swtichAccount(){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Account::gotoUserCetner(){
@@ -248,6 +287,8 @@ void Account::gotoUserCetner(){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Account::gotoBBS(){	
@@ -256,6 +297,8 @@ void Account::gotoBBS(){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Account::gotoEnterAPPCetner(){
@@ -264,7 +307,9 @@ void Account::gotoEnterAPPCetner(){
     if(!JniHelper::getMethodInfo(methodInfo, AccountSDKClass, "gotoEnterAPPCetnerInGLThread", "()V"))
 		return ;
 	jobject account = SdkJniHelper::getAccount();
-	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);	
+	methodInfo.env->CallVoidMethod(account, methodInfo.methodID);
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);	
 }
 
 void Account::showToolbar(bool visible){
@@ -274,6 +319,8 @@ void Account::showToolbar(bool visible){
 		return ;
 	jobject account = SdkJniHelper::getAccount();
 	methodInfo.env->CallVoidMethod(account, methodInfo.methodID, visible);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Account::showToolbar(bool visible, AccountToolBarPlace place){
@@ -282,39 +329,53 @@ void Account::showToolbar(bool visible, AccountToolBarPlace place){
     if(!JniHelper::getMethodInfo(methodInfo, AccountSDKClass, "showToolbarInGLThread", "(ZI)V"))
 		return ;
 	jobject account = SdkJniHelper::getAccount();
-	methodInfo.env->CallVoidMethod(account, methodInfo.methodID, visible, (int)place);	 
+	methodInfo.env->CallVoidMethod(account, methodInfo.methodID, visible, (int)place);	
+	methodInfo.env->DeleteLocalRef(account);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID); 
 }
 
 const char* Account::getOtherInfo(const char* key){
 	s_accountTemp.clear();
 	jobject account = SdkJniHelper::getAccount();
 	s_accountTemp = SdkJniHelper::getOtherInfo(account, AccountSDKClass, key);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 	return s_accountTemp.c_str();
 }
 
 void Account::setOtherInfo(const char* key, const char* value){
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::setOtherInfo(account, AccountSDKClass, key, value);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 void Account::callFuntionBegin(){
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::callFuntionBegin(account, AccountSDKClass);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 void Account::addFunctionParam(const char* key, const char* value){
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::addFunctionParam(account, AccountSDKClass, key, value);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 void Account::callFunction(const char* name){
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::callFunction(account, AccountSDKClass, name);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 void Account::callFunctionEnd(){
 	jobject account = SdkJniHelper::getAccount();
 	SdkJniHelper::callFunctionEnd(account, AccountSDKClass);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(account);
 }
 
 void Account::setDefaultAccountSDKByClassName(const char* className){
@@ -401,8 +462,10 @@ public:
 	    if(m_operate == "didLoginFinished")
 	    {
 			account->clean();	
+			JNIEnv* env = JniHelper::getEnv();
 			jobject jAccount = SdkJniHelper::getAccount();
 			int count = SdkJniHelper::getFriendCount(jAccount);
+
 			for(int i = 0; i < count; i++)
 			{
 				jobject jFriend = SdkJniHelper::getFriend(jAccount, i);
@@ -423,13 +486,10 @@ public:
 				accountFriend->setLastName(strLastname.c_str());
 				account->addFriend(accountFriend);
 				accountFriend->release();
-				//CCLOG("id %s img %s name %s gender %s firstName %s, middleName %s lastName %s", strId.c_str(), strProfileImage.c_str(), strName.c_str(), strGender.c_str(), strFirstName.c_str(), strMiddleName.c_str(), strLastname.c_str());
+				
+				env->DeleteLocalRef(jFriend);
 			}
-			// AccountFriend* firiends = account->getFriend(0);
-			// if(firiends)
-			// {
-				// CCLOG("id %s img %s name %s gender %s firstName %s, middleName %s lastName %s", firiends->getId(), firiends->getProfileIamge(), firiends->getName(), firiends->getGender(), firiends->getFirstName(), firiends->getMiddleName(), firiends->getLastName());
-			// }
+			env->DeleteLocalRef(jAccount);
 			const char* szError = m_errorCode.c_str();
 	    	if(szError[0] == 0)
 	    		szError = nullptr;

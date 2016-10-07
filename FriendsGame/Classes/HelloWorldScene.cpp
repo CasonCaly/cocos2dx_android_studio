@@ -94,11 +94,14 @@ bool HelloWorld::init()
 
     btn->addClickEventListener([this](Ref* sender)
         {
-            CCLOG("addClickEventListener");
-            Share* share = SDKCenter::getShare();
-            share->prepare();
-            share->shareLinkURL("http://developers.facebook.com/docs/android", "", "The 'Hello Facebook' sample  showcases simple Facebook integration", "Hello Facebook", "", 0);
-        }
+        //     CCLOG("addClickEventListener");
+        //     Share* share = SDKCenter::getShare();
+        //     share->prepare();
+        //     share->shareLinkURL("http://developers.facebook.com/docs/android", "", "The 'Hello Facebook' sample  showcases simple Facebook integration", "Hello Facebook", "", 0);
+            Purchase* purchcase = SDKCenter::getPurchase();
+            purchcase->setProductId("card_1");
+            purchcase->startPurchase();
+         }
     );
 
 

@@ -13,6 +13,8 @@ public:
     
     virtual void didPurchaseFinish(const char* error){}
     
+	virtual void didPurchaseCancel(){}
+
     virtual ~PurchaseDelegate(){}
 };
 
@@ -34,6 +36,8 @@ public:
 	void setPrice(float price);
 
 	void setPayId(const char* payId);
+
+	void setProductId(const char* productId);
 
 	void setGameUserServer(const char* gameUserServer);
 

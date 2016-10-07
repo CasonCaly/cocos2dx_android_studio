@@ -15,6 +15,8 @@ void Share::prepare()
 {
 	jobject share = SdkJniHelper::getShare();
 	SdkJniHelper::prepareSDK(share);
+	JNIEnv* env = JniHelper::getEnv();
+	env->DeleteLocalRef(share);
 }
 
 void Share::shareText(const char* text, int scene)
@@ -29,6 +31,10 @@ void Share::shareText(const char* text, int scene)
 		jtext = methodInfo.env->NewStringUTF(text);
 	
 	methodInfo.env->CallVoidMethod(jshare, methodInfo.methodID, jtext, scene);
+	methodInfo.env->DeleteLocalRef(jshare);
+	if(jtext)
+		methodInfo.env->DeleteLocalRef(jtext);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Share::shareImage(const char*shareImage,const char*thumbImage,const char*tagName,const char*description,const char*title,const char*messageExt,const char*action, int scene, int shareType)
@@ -68,6 +74,23 @@ void Share::shareImage(const char*shareImage,const char*thumbImage,const char*ta
 		jaction = methodInfo.env->NewStringUTF(action);
 	
 	methodInfo.env->CallVoidMethod(jshare, methodInfo.methodID, jshareImage, jthumbImage, jtagName, jdescription, jtitle, jmessageExt, jaction, scene, shareType);
+
+	methodInfo.env->DeleteLocalRef(jshare);
+	if(jshareImage)
+		methodInfo.env->DeleteLocalRef(jshareImage);
+	if(jthumbImage)
+		methodInfo.env->DeleteLocalRef(jthumbImage);
+	if(jtagName)
+		methodInfo.env->DeleteLocalRef(jtagName);
+	if(jdescription)
+		methodInfo.env->DeleteLocalRef(jdescription);
+	if(jtitle)
+		methodInfo.env->DeleteLocalRef(jtitle);
+	if(jmessageExt)
+		methodInfo.env->DeleteLocalRef(jmessageExt);
+	if(jaction)
+		methodInfo.env->DeleteLocalRef(jaction);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Share::shareMusicURL(const char*musicURL,const char*dataURL,const char*description,const char*title,const char*thumbImage,int scene)
@@ -99,6 +122,18 @@ void Share::shareMusicURL(const char*musicURL,const char*dataURL,const char*desc
 		jthumbImage = methodInfo.env->NewStringUTF(thumbImage);
 	
 	methodInfo.env->CallVoidMethod(jshare, methodInfo.methodID, jmusicURL, jdataURL, jdescription, jtitle, jthumbImage, scene);
+	methodInfo.env->DeleteLocalRef(jshare);
+	if(jmusicURL)
+		methodInfo.env->DeleteLocalRef(jmusicURL);
+	if(jdataURL)
+		methodInfo.env->DeleteLocalRef(jdataURL);
+	if(jdescription)
+		methodInfo.env->DeleteLocalRef(jdescription);
+	if(jtitle)
+		methodInfo.env->DeleteLocalRef(jtitle);
+	if(jthumbImage)
+		methodInfo.env->DeleteLocalRef(jthumbImage);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Share::shareVideoURL(const char*videoURL,const char*description,const char*title,const char*thumbImage,int scene)
@@ -126,16 +161,23 @@ void Share::shareVideoURL(const char*videoURL,const char*description,const char*
 		jthumbImage = methodInfo.env->NewStringUTF(thumbImage);
 	
 	methodInfo.env->CallVoidMethod(jshare, methodInfo.methodID, jvideoURL, jdescription, jtitle, jthumbImage, scene);
+	methodInfo.env->DeleteLocalRef(jshare);
+	if(jvideoURL)
+		methodInfo.env->DeleteLocalRef(jvideoURL);
+	if(jdescription)
+		methodInfo.env->DeleteLocalRef(jdescription);
+	if(jtitle)
+		methodInfo.env->DeleteLocalRef(jtitle);
+	if(jthumbImage)
+		methodInfo.env->DeleteLocalRef(jthumbImage);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }
 
 void Share::shareLinkURL(const char*urlString,const char*tagName,const char*description,const char*title,const char*thumbImage,int scene)
 { 
-	CCLOG("Share::shareLinkURL 136");
 	JniMethodInfo methodInfo;
     if(!JniHelper::getMethodInfo(methodInfo, "com/lib/x/ShareSDK", "shareLinkURLInGLThread", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V"))
 		return;
-
-	CCLOG("Share::shareLinkURL 137");
 
 	jobject jshare = SdkJniHelper::getShare();
 	
@@ -160,4 +202,17 @@ void Share::shareLinkURL(const char*urlString,const char*tagName,const char*desc
 		jthumbImage = methodInfo.env->NewStringUTF(thumbImage);
 	
 	methodInfo.env->CallVoidMethod(jshare, methodInfo.methodID, jurlString, jtagName, jdescription, jtitle, jthumbImage, scene);
+
+	methodInfo.env->DeleteLocalRef(jshare);
+	if(jurlString)
+		methodInfo.env->DeleteLocalRef(jurlString);
+	if(jtagName)
+		methodInfo.env->DeleteLocalRef(jtagName);
+	if(jdescription)
+		methodInfo.env->DeleteLocalRef(jdescription);
+	if(jtitle)
+		methodInfo.env->DeleteLocalRef(jtitle);
+	if(jthumbImage)
+		methodInfo.env->DeleteLocalRef(jthumbImage);
+	methodInfo.env->DeleteLocalRef(methodInfo.classID);
 }

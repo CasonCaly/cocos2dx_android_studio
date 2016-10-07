@@ -54,6 +54,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
     account->login();
     bool isDefault = account->isDefault();
 
+    Purchase* purchcase = SDKCenter::getPurchase();
+    purchcase->setPayUrl("http://pay.ekuns.com/api/order/google/summit");
+    purchcase->prepare();
+
 	CCLOG("applicationDidFinishLaunching account login  %d", isDefault);
     return true;
 }

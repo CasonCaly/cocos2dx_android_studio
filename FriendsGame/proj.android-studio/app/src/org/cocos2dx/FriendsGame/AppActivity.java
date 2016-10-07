@@ -24,57 +24,57 @@ THE SOFTWARE.
 package org.cocos2dx.FriendsGame;
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
+
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 import com.lib.x.*;
 import com.lib.sdk.facebook.*;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import com.lib.sdk.googlepay.*;
 
 
 public class AppActivity extends Cocos2dxActivity {
 
     protected void onCreate(final Bundle savedInstanceState)
     {
-        CoreMain.init();
-        if(!SDKCenter.hasThisSDK(FacebookAccount.class.getName()))
-        {
-            FacebookAccount account = new FacebookAccount();
-            boolean isDefault = account.isDefault();
 
+        CoreMain.init(this);
+        if(!SDKCenter.hasThisSDK(AccountSDK.class.getName())) {
+            AccountSDK account = new AccountSDK();
             SDKCenter.setDefaultAccountSDK(account);
         }
 
-        if(!SDKCenter.hasThisSDK(FacebookShare.class.getName()))
-        {
-            FacebookShare share = new FacebookShare();
-            SDKCenter.setDefaultShareSDK(share);
+        if(!SDKCenter.hasThisSDK(GooglePayPurchase.class.getName())){
+            GooglePayPurchase purchase = new GooglePayPurchase();
+            String key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgJCXCnQFvcY/jvYhfWuXLRLoQaB+reFrijbVLMT3/Dcfy0nrsb7b/+j82VwDgz2PgNYsi3Z+UWQEfB1dTcRxxE2Lx/f8SB4Fy+d6xbpdYDowsja010z5dmfeKta7ievngOqNYPCsMDlK/V/SubdEkIAeCo2LtrblYdz9NWy4BO6m+F83dezldvbQIATseEVRipn6iZ2O6Xbvl2cQUXuVyjdIW3Lme3ub+tGjxM5iI7EqGRbOJL+8/giRz3RQ3H3yOoxokMHalwYcSKoOyS2CvRchUP6eKIGxvhM3BJnXgFWzFQs6VF292IG0bOLYNLDUoEsP1FKM7NQlpFFDut7/KQIDAQAB";
+            purchase.setGooglePayKey(key);
+            SDKCenter.setDefaultPurchaseSDK(purchase);
         }
-
+//
+//        if(!SDKCenter.hasThisSDK(FacebookShare.class.getName()))
+//        {
+//            FacebookShare share = new FacebookShare();
+//            SDKCenter.setDefaultShareSDK(share);
+//        }
+//
+//        super.onCreate(savedInstanceState);
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    "org.cocos2dx.FriendsGame",
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        }  catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
         super.onCreate(savedInstanceState);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "org.cocos2dx.FriendsGame",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        }  catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        CoreMain.onCreate(savedInstanceState);
-        SDKCenter.account().login();
+        CoreMain.onCreate(this, savedInstanceState);
     }
 
     @Override

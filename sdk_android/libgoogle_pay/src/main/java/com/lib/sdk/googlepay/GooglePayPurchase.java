@@ -25,6 +25,7 @@ public class GooglePayPurchase extends PurchaseSDK {
     public void onCreate(final Bundle savedInstanceState) {
         if(null == mLeakOrderSync){
             mLeakOrderSync = new LeakOrderSync(this.getGameActivity());
+            mLeakOrderSync.setGooglePayKey(mGooglePayKey);
             mLeakOrderSync.setCallback(new LeakOrderSync.Callback(){
                     @Override
                     public void didComlection(LeakOrderSync transcation, String error){
@@ -35,19 +36,26 @@ public class GooglePayPurchase extends PurchaseSDK {
                     }
                 }
             );
-            mLeakOrderSync.start();
+
         }
         else {
             mLeakOrderSync.setActivity(this.getGameActivity());
         }
-        mHelper = mLeakOrderSync.getIabHelper();
+
+    }
+
+    @Override
+    public void prepare(){
+        mLeakOrderSync.start();
     }
 
     @Override
     public void startPurchase() {
         if(mLeakOrderSyncFinish) {
+            mHelper = mLeakOrderSync.getIabHelper();
             Activity act = this.getGameActivity();
             String cpOrder = GooglePayPurchase.getCpOrder(mGameUserId, mGameUserServer, 204, "appfame_jp");
+            this.setOrderSerial(cpOrder);
             mHelper.launchPurchaseFlow(act, mProductId, mReqId, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
                 public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
@@ -63,7 +71,7 @@ public class GooglePayPurchase extends PurchaseSDK {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if(mHelper != null) {
-            mHelper.handleActivityResult(requestCode, resultCode, data);
+           mHelper.handleActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -77,14 +85,10 @@ public class GooglePayPurchase extends PurchaseSDK {
 
 
     protected void onIabPurchaseFinished(IabResult result, Purchase purchase){
-        if (null == purchase){
-            this.notifyFailedWithStepAndDescp(GooglePayPurchase.PurchaseWithPurchaseNullError, null);
-            Log.d(TAG, "onIabPurchaseFinished: purchase is null");
-            return;
-        }
         if (result.isFailure()){
             if (IabHelper.IABHELPER_USER_CANCELLED != result.getResponse()){
-                this.notifyFailedWithStepAndDescp(GooglePayPurchase.PurchaseWithFail, result.toString());
+                this.notifyPurchaseFinish(result.getMessage());
+                this.log("onIabPurchaseFinished 95");
             }
             else {
                 this.notifyPurchaseCancel();
@@ -97,17 +101,25 @@ public class GooglePayPurchase extends PurchaseSDK {
     }
 
     protected void asyncConsume(Purchase purchase)  {
-        if (null == mHelper) {
-            return;
-        }
+        this.log("asyncConsume purchase signature "+ purchase.getSignature());
+        this.log("asyncConsume purchase " + purchase.getOriginalJson());
+        //消费之前先记录下来
+        SynStorage.Item item = new SynStorage.Item();
+        item.setNotConsumeState();
+        item.gameUserId = this.mGameUserId;
+        item.gameUserServer = this.mGameUserServer;
+        item.orderSerial = purchase.getDeveloperPayload();
+        item.price = this.mPrice;
+        mLeakOrderSync.getSynStorage().addAndSave(item);
 
         mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener(){
                 public void onConsumeFinished(Purchase purchase, IabResult result){
-                    if (null == mHelper){
-                        return;
-                    }
                     if (result.isSuccess()){
                         GooglePayPurchase.this.onConsumeFinished(purchase);
+                    }
+                    else{
+                        GooglePayPurchase.this.notifyPurchaseFinish(result.getMessage());
+                        GooglePayPurchase.this.log("asyncConsume fail " + result.getMessage());
                     }
                 }
             }
@@ -115,7 +127,14 @@ public class GooglePayPurchase extends PurchaseSDK {
     }
 
     protected void onConsumeFinished(Purchase purchase){
-
+        //设置为未于服务器同步状态，并存储
+        SynStorage synStorage = mLeakOrderSync.getSynStorage();
+        SynStorage.Item item  = synStorage.get(purchase.getDeveloperPayload());
+        if(null != item) {
+            item.setNotSynServverState();
+            synStorage.save();
+        }
+        //下一步开始和服务端同步
     }
 
     public static String getCpOrder(String _accountId, String _serverId, int _channelId, String _channelFlag) {
@@ -132,11 +151,8 @@ public class GooglePayPurchase extends PurchaseSDK {
         return appOrderId;
     }
 
-    protected void notifyFailedWithStepAndDescp(int step, String error){
-        String descp = "Payment failed, error step is " + step;
-        if(null != error && !error.isEmpty())
-            descp += ", error description is "+error;
-        this.notifyPurchaseFinish(descp);
+    private void log(String log){
+        Log.d("GooglePayPurchase", "GooglePayPurchase " + log);
     }
 
     protected final String TAG = "IabStore";
@@ -148,7 +164,4 @@ public class GooglePayPurchase extends PurchaseSDK {
     protected boolean mDebugLog = false;
     protected LeakOrderSync mLeakOrderSync;
 
-    //以下是步骤码
-    public final static int PurchaseWithPurchaseNullError = 400;//购买时遇到Purchase对象为空错误
-    public final static int PurchaseWithFail = 401;//购买失败
 }

@@ -31,6 +31,8 @@ public class ISDK extends Handler{
 
 
 	public Activity getGameActivity(){
+		SDKCenter center = SDKCenter.getInstance();
+		mGameActivity = center.getGameActivity();
 		return mGameActivity;
 	}
 
@@ -57,17 +59,17 @@ public class ISDK extends Handler{
 		}
 
 		//等待主线程处理完成
-		synchronized (this) {
-			try {
-                Message msg = new Message();
-                msg.what = PrepareSDKMsg;
-                this.sendMessage(msg);
-                this.wait();
-                mIsPrepare = true;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+//		synchronized (this) {
+//			try {
+		Message msg = new Message();
+		msg.what = PrepareSDKMsg;
+		this.sendMessage(msg);
+//                this.wait();
+//                mIsPrepare = true;
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 		
 	/**

@@ -21,7 +21,7 @@ public:
 
 	static void prepareSDK(jobject obj);
 
-	static void setXXXWithString(jobject obj, const char* szValue);
+	static void setXXXWithString(jobject obj, const char* className, const char* functionName, const char* szValue);
 	
 	static std::string getXXXReturnString(jobject obj, const char* className, const char* functionName);
 
