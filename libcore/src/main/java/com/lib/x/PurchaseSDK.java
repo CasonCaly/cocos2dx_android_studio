@@ -76,20 +76,26 @@ public class PurchaseSDK extends ISDK{
 			mGameUserId = userId;
 	}
 
+	public String getGameUserId(){
+		return mGameUserId;
+	}
+
 	public void setGameUserName(String userName)
 	{
 		if(null != userName)
 			mGameUserName = userName;
 	}
 
-	public void setPayUrl(String payUrl)
-	{
+	public void setPayUrl(String payUrl){
 		if(null != payUrl)
 			mPayUrl = payUrl;
 	}
 
-	public void setProductType(String szProductType)
-	{
+	public String getPayUrl(){
+		return mPayUrl;
+	}
+
+	public void setProductType(String szProductType){
 		if(null != szProductType)
 			mProductType = szProductType;
 	}

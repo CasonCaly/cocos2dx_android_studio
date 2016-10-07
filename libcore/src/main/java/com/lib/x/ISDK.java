@@ -146,7 +146,8 @@ public class ISDK extends Handler{
     {
 	    if (null != key && null != value)
         {
-	    	mOtherInfo.remove(key);
+			if(mOtherInfo.containsKey(key))
+	    		mOtherInfo.remove(key);
 	        mOtherInfo.put(key, value);
 	    }	
 	}

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +35,32 @@ public class PayUtil {
 
         //Check
         return pName.contains(packageName);
+    }
+
+//    public static String getCpOrder(String _accountId, String _serverId, int _channelId, String _channelFlag) {
+//        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+//        final String date = sDateFormat.format(new java.util.Date());
+//        int random = (int)(Math.random() * (9999 - 1000)) + 1000;//四位随机数字
+//        String appOrderId = String.format("%s--%s--%s--%s--%s--%s",
+//                _accountId,
+//                _serverId,
+//                ""+_channelId,
+//                date,
+//                _channelFlag,
+//                ""+random);
+//        return appOrderId;
+//    }
+
+    public static String getDevOrder(GooglePayPurchase payPurchase) {
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        String devOrder = "mid=" + payPurchase.getGameUserId();
+        devOrder += ("&geid=" + payPurchase.getOtherInfo("geid"));
+        devOrder += ("&pcc_id=" + payPurchase.getOtherInfo("pcc_id"));
+        devOrder += ("&cc_flag=" + payPurchase.getOtherInfo("cc_flag"));
+        devOrder += ("&cc_id=" + payPurchase.getOtherInfo("cc_id"));
+        devOrder += ("&pm_id=" + payPurchase.getOtherInfo("pm_id"));
+        devOrder += ("&unit_price=" + payPurchase.getOtherInfo("unit_price"));
+        devOrder += ("&points=" + payPurchase.getOtherInfo("points"));
+        return devOrder;
     }
 }

@@ -100,6 +100,14 @@ bool HelloWorld::init()
         //     share->shareLinkURL("http://developers.facebook.com/docs/android", "", "The 'Hello Facebook' sample  showcases simple Facebook integration", "Hello Facebook", "", 0);
             Purchase* purchcase = SDKCenter::getPurchase();
             purchcase->setProductId("card_1");
+            purchcase->setGameUserId("35");
+            purchcase->setOtherInfo("geid", "101011010");
+            purchcase->setOtherInfo("pcc_id", "1");
+            purchcase->setOtherInfo("cc_flag", "card_1");
+            purchcase->setOtherInfo("cc_id", "1");
+            purchcase->setOtherInfo("pm_id", "1");
+            purchcase->setOtherInfo("unit_price", "1");
+            purchcase->setOtherInfo("points", "60");
             purchcase->startPurchase();
          }
     );
