@@ -131,7 +131,7 @@
     
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
         if (error) {
-            
+            [self notifyLoginFinished:[error localizedFailureReason]];
             return;
         }
         else{
