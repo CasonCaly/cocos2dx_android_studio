@@ -66,9 +66,9 @@ public  class SynRequest extends AsyncTask<Void,Void,Void > {
             conn.setRequestProperty("Content-Type", "plain/text; charset=UTF-8");
 
             OutputStream outStream = conn.getOutputStream();
-            outStream.write(byteJson);// 输入参数
+            outStream.write(byteJson, 0, byteJson.length);// 输入参数
             outStream.flush();
-            outStream.close();
+           
 
             mStatusCode = conn.getResponseCode();
             if(200 == mStatusCode) {
@@ -92,6 +92,7 @@ public  class SynRequest extends AsyncTask<Void,Void,Void > {
                     this.log("SynRequest 90" + e.getLocalizedMessage());
                 }
             }
+            outStream.close();
         }
         catch(MalformedURLException e){
             mError = e.getLocalizedMessage();

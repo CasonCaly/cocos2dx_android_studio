@@ -119,6 +119,11 @@ void Purchase::setProductType(const char* szProductType){
     purchaseSDK.productType = safeString2NSString(szProductType);
 }
 
+void Purchase::setProductId(const char* productId){
+    PurchaseSDK* purchaseSDK = [OCSDKCenter purchase];
+    purchaseSDK.productId = safeString2NSString(productId);
+}
+
 const char* Purchase::getOtherInfo(const char* key){
     return s_empty.c_str();
 }

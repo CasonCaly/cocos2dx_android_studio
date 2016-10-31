@@ -49,6 +49,8 @@ public:
     
 	void setProductType(const char* szProductType);
 	
+    void setProductId(const char* productId);
+    
 public:
     
     const char* getOtherInfo(const char* key);

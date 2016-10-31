@@ -57,7 +57,9 @@ static const  char* szEmpty = "";
 {
     if (key && value)
     {
-        [self.otherInfo  setObject:[NSString stringWithUTF8String:value] forKey:[NSString stringWithUTF8String:key]];
+        NSString* nskey = [NSString stringWithUTF8String:key];
+        [self.otherInfo removeObjectForKey:nskey];
+        [self.otherInfo  setObject:[NSString stringWithUTF8String:value] forKey:nskey];
     }
 }
 
