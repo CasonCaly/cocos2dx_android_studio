@@ -11,16 +11,21 @@ class JObject{
 
 public:
 
-    JObject();
+    JObject(const string& className);
 
     virtual ~JObject();
 
-    void init();
+    JObject(const JObject& _object);
+
+    const JObject& operator = (const JObject& _object);
+
+    void callVoidMethod(const sring& name, const string& paramDeclare, ...);
 
 protected:
-
+    int m_refcount;
     jclass m_jclass;
-
+    jobject m_jobject;
+    JNIEnv m_env;
     map<string, jmethodID> m_mapFunction;
 };
 }
